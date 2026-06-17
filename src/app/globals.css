@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #f8f9fa;
+  --color-surface-container: #f0f2f5;
+  --color-primary: #b5000b;
+  --color-secondary: #5d5e61;
+  --color-outline: #e0e0e0;
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #5e3f3b;
+  --color-error: #ba1a1a;
+  --color-success: #2e7d32;
+
+  --border-radius-default: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --border-radius-full: 9999px;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+  --spacing-base: 8px;
+
+  --font-body-md: "Inter", sans-serif;
+  --font-label-md: "JetBrains Mono", monospace;
+  --font-display-lg: "Inter", sans-serif;
+
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+@utility material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@utility glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.03);
+}
+
+@utility gradient-accent-1 {
+  background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+}
+
+@utility gradient-accent-2 {
+  background: linear-gradient(135deg, #fb923c 0%, #facc15 100%);
+}
+
+@utility gradient-text {
+  background: linear-gradient(135deg, #b5000b 0%, #eb4d4b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
+.scan-animation {
+  animation: scanline 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
