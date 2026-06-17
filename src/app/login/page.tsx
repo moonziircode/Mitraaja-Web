@@ -7,6 +7,7 @@ export default function LoginPage() {
   const { login, isLoading } = useAuth();
   const [agentId, setAgentId] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -19,146 +20,162 @@ export default function LoginPage() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Login gagal. Periksa kredensial Anda.'
+          : 'Login gagal. Periksa kembali Agent ID dan Password.'
       );
     }
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-white font-body-md overflow-hidden">
-      {/* Left Branding Panel - Hidden on mobile, takes 50% on desktop */}
-      <div className="hidden lg:flex w-1/2 relative bg-slate-900 overflow-hidden flex-col justify-between p-12">
-        {/* Dynamic Abstract Background */}
-        <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary blur-[120px] mix-blend-screen animate-float-1"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-rose-600 blur-[140px] mix-blend-screen animate-float-2"></div>
-        </div>
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"></div>
-
-        {/* Top Logo Area */}
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-rose-600 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="material-symbols-outlined text-white text-2xl font-bold">delivery_dining</span>
-          </div>
-          <span className="text-white font-extrabold text-xl tracking-tight">MITRAAJA<span className="text-primary font-light">GATEWAY</span></span>
-        </div>
-
-        {/* Center Copy */}
-        <div className="relative z-10 max-w-lg mt-20">
-          <h1 className="text-5xl font-extrabold text-white leading-tight tracking-tight mb-6">
-            Sistem Operasional<br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-primary">Agen Terpadu</span>
-          </h1>
-          <p className="text-slate-300 text-lg leading-relaxed font-medium">
-            Portal eksklusif untuk mitra Anteraja. Kelola klaim AWB, pantau performa, dan tingkatkan efisiensi operasional gerai Anda dalam satu dashboard mutakhir.
-          </p>
-        </div>
-
-        {/* Bottom Footer Info */}
-        <div className="relative z-10 flex items-center gap-4 text-slate-400 text-sm font-semibold">
-          <span className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-primary">verified_user</span> Secure Network</span>
-          <span className="w-1 h-1 rounded-full bg-slate-600"></span>
-          <span className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-primary">speed</span> Fast Processing</span>
-        </div>
-      </div>
-
-      {/* Right Login Panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 relative bg-[#fcfdfe]">
-        {/* Mobile Logo Only */}
-        <div className="absolute top-8 left-8 lg:hidden flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-rose-600 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="material-symbols-outlined text-white text-xl font-bold">delivery_dining</span>
-          </div>
-          <span className="text-slate-900 font-extrabold text-lg tracking-tight">MITRAAJA</span>
-        </div>
-
-        <div className="w-full max-w-md animate-slide-in">
-          <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Selamat Datang</h2>
-            <p className="text-slate-500 font-medium">Masuk menggunakan Nomor Induk Agen (NIA) Anda.</p>
+    <div className="pastel-gradient-bg min-h-screen flex items-center justify-center p-md md:p-xl font-body-md text-on-surface relative overflow-hidden">
+      {/* Main Container */}
+      <main className="w-full max-w-md relative z-10">
+        {/* Login Card */}
+        <div className="glass-panel rounded-[16px] shadow-[0px_8px_24px_rgba(0,0,0,0.06)] p-xl overflow-hidden relative">
+          
+          {/* Logo & Brand Header */}
+          <div className="flex flex-col items-center mb-xl text-center">
+            <div className="w-16 h-16 bg-surface-container-lowest rounded-full flex items-center justify-center mb-md shadow-sm border border-surface-variant">
+              <span 
+                className="material-symbols-outlined text-[32px] text-primary-container" 
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                local_shipping
+              </span>
+            </div>
+            <h1 className="font-headline-md text-headline-md text-on-surface mb-xs tracking-tight">
+              Login Agent Gateway
+            </h1>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Masuk untuk mengelola paket dan klaim AWB
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="agent-id" className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
-                Agent Staff NIA
+          {/* Login Form */}
+          <form className="space-y-lg" id="loginForm" onSubmit={handleSubmit}>
+            
+            {/* NIA Input */}
+            <div className="space-y-sm">
+              <label className="block font-label-md text-label-md text-on-surface animate-fade-in" htmlFor="nia">
+                NIA (Agent ID)
               </label>
-              <div className="relative group">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-                  person
-                </span>
-                <input
-                  id="agent-id"
+              <div className="relative input-focus-ring rounded-lg border border-surface-variant bg-surface-container-lowest transition-all duration-200">
+                <div className="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">badge</span>
+                </div>
+                <input 
+                  className="block w-full pl-xl pr-md py-md border-none bg-transparent rounded-lg font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0 outline-none" 
+                  id="nia" 
+                  name="nia" 
+                  placeholder="Contoh: 50004786" 
+                  required 
                   type="text"
-                  className="w-full h-14 pl-12 pr-4 bg-white border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-xl text-slate-800 font-medium transition-all shadow-sm outline-none placeholder:text-slate-400"
                   value={agentId}
                   onChange={(e) => setAgentId(e.target.value)}
-                  placeholder="Contoh: AGT-2026-XYZ"
-                  required
+                  disabled={isLoading}
                   autoComplete="username"
                   autoFocus
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
-                  Password Kredensial
-                </label>
-                <a href="#" className="text-xs font-bold text-primary hover:text-rose-700 transition-colors">Lupa Password?</a>
-              </div>
-              <div className="relative group">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-                  lock
-                </span>
-                <input
-                  id="password"
-                  type="password"
-                  className="w-full h-14 pl-12 pr-4 bg-white border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-xl text-slate-800 font-medium transition-all shadow-sm outline-none placeholder:text-slate-400"
+            {/* Password Input */}
+            <div className="space-y-sm">
+              <label className="block font-label-md text-label-md text-on-surface" htmlFor="password">
+                Password
+              </label>
+              <div className="relative input-focus-ring rounded-lg border border-surface-variant bg-surface-container-lowest transition-all duration-200">
+                <div className="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
+                </div>
+                <input 
+                  className="block w-full pl-xl pr-xl py-md border-none bg-transparent rounded-lg font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0 outline-none" 
+                  id="password" 
+                  name="password" 
+                  placeholder="••••••••" 
+                  required 
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
+                  disabled={isLoading}
                   autoComplete="current-password"
                 />
+                <button 
+                  className="absolute inset-y-0 right-0 pr-md flex items-center text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none" 
+                  id="togglePassword" 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <span className="material-symbols-outlined text-[20px] password-icon">
+                    {showPassword ? 'visibility' : 'visibility_off'}
+                  </span>
+                </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full h-14 bg-gradient-to-r from-primary to-rose-600 hover:from-rose-600 hover:to-primary text-white rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="material-symbols-outlined animate-spin">sync</span>
-                  <span>Memverifikasi...</span>
-                </>
-              ) : (
-                <>
-                  <span>Masuk Ke Dashboard</span>
-                  <span className="material-symbols-outlined text-lg">login</span>
-                </>
-              )}
-            </button>
-
+            {/* Error Message */}
             {error && (
-              <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-3 animate-slide-in">
-                <span className="material-symbols-outlined text-rose-500 shrink-0">error</span>
-                <p className="text-sm font-semibold text-rose-700 leading-tight">{error}</p>
+              <div className="p-md bg-error-container/20 border border-error/15 rounded-lg flex items-center gap-sm text-error font-semibold text-label-md animate-fade-in">
+                <span className="material-symbols-outlined text-[18px]">error</span>
+                <span>{error}</span>
               </div>
             )}
-          </form>
 
-          <div className="mt-12 text-center lg:text-left">
-            <p className="text-xs font-semibold text-slate-400">
-              © 2026 PT Anteraja Logistics. <br className="lg:hidden" />Hak cipta dilindungi.
-            </p>
-          </div>
+            {/* Action Area */}
+            <div className="pt-sm space-y-md">
+              <button 
+                className="w-full bg-primary-container text-on-primary font-title-lg text-title-lg py-md rounded-[8px] shadow-[0px_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0px_8px_24px_rgba(0,0,0,0.06)] hover:bg-primary transition-all duration-200 flex justify-center items-center relative overflow-hidden group" 
+                id="submitBtn" 
+                type="submit"
+                disabled={isLoading}
+              >
+                <span className={`btn-text transition-opacity duration-200 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                  Masuk Sekarang
+                </span>
+                <span className={`material-symbols-outlined absolute right-md opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-4 transition-all duration-300 ${isLoading ? 'hidden' : ''}`}>
+                  arrow_forward
+                </span>
+                
+                {/* Loading Spinner */}
+                {isLoading && (
+                  <div className="loading-spinner absolute inset-0 flex items-center justify-center bg-primary-container">
+                    <svg className="animate-spin h-5 w-5 text-on-primary" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+                    </svg>
+                  </div>
+                )}
+              </button>
+              
+              <div className="text-center">
+                <a 
+                  className="font-label-md text-label-md text-primary-container hover:text-primary transition-colors inline-flex items-center gap-xs" 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert('Silakan hubungi administrator pusat (Central Hub) untuk melakukan reset password.');
+                  }}
+                >
+                  <span className="material-symbols-outlined text-[16px]">help_center</span>
+                  Lupa password atau kendala login?
+                </a>
+              </div>
+            </div>
+
+          </form>
+          
+          {/* Subtle Decorative Elements */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary-fixed-dim/20 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-secondary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+        
         </div>
-      </div>
+
+        {/* Footer Footer */}
+        <div className="text-center mt-lg">
+          <p className="font-label-sm text-label-sm text-on-surface-variant/70">
+            © 2026 Mitraaja Gateway. All rights reserved.
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
-

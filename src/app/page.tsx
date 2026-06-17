@@ -25,12 +25,14 @@ interface ScanResult {
 export default function ScannerPage() {
   const { user, isLoading, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<'scan' | 'track'>('scan');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Scan State
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [awbValue, setAwbValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   
   // Tracking State
   const [trackingAwb, setTrackingAwb] = useState('');
@@ -101,7 +103,7 @@ export default function ScannerPage() {
     return { total, success, error, successRate, errorRate };
   }, [history]);
 
-  // Filter history based on top search bar query
+  // Filter history based on search bar query
   const filteredHistory = useMemo(() => {
     if (!searchQuery.trim()) return history;
     const query = searchQuery.toLowerCase().trim();
@@ -314,7 +316,7 @@ export default function ScannerPage() {
   // Loading state
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-sm">
           <span className="material-symbols-outlined text-4xl text-primary animate-spin">
             sync
@@ -335,786 +337,688 @@ export default function ScannerPage() {
       .slice(0, 2)
     : 'AG';
 
-  const isMockMode = user.storeName === 'Toko Mock Sejahtera';
-
   return (
-    <div className="bg-slate-50 font-body-md text-slate-800 min-h-screen flex overflow-hidden selection:bg-primary/20">
+    <div className="bg-background text-on-background min-h-screen flex font-sans antialiased selection:bg-primary-container selection:text-on-primary-container overflow-hidden w-full relative">
       
-      {/* Side Navigation (Sleek Dark Mode Sidebar) */}
-      <aside className="w-20 lg:w-72 bg-slate-900 flex flex-col items-center lg:items-stretch py-8 shrink-0 transition-all duration-300 z-30 shadow-2xl relative overflow-hidden">
-        {/* Decorative Background Glows */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
-        
-        <div className="px-6 mb-12 flex items-center gap-4 relative z-10">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary to-rose-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined text-white text-2xl font-bold">delivery_dining</span>
-          </div>
-          <div className="hidden lg:block leading-none">
-            <span className="font-extrabold text-lg tracking-tight text-white block">
-              MITRAAJA
-            </span>
-            <span className="text-xs text-primary font-bold uppercase tracking-widest block mt-1">
-              Agent Portal
-            </span>
+      {/* Side Menu Navigation Overlay for Mobile */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* SideNavBar (Template Layout) */}
+      <nav className={`flex flex-col bg-surface/85 backdrop-blur-xl shadow-[0px_4px_12px_rgba(0,0,0,0.03)] h-screen w-64 fixed left-0 top-0 z-50 py-lg px-md border-r border-surface-variant transition-transform duration-300 md:translate-x-0 ${
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="mb-xl flex items-center gap-sm px-sm">
+          <span className="material-symbols-outlined text-primary text-headline-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
+            local_shipping
+          </span>
+          <div className="flex flex-col">
+            <span className="text-title-lg font-title-lg text-primary tracking-tight font-bold">Mitraaja Gateway</span>
+            <span className="text-label-sm font-label-sm text-secondary uppercase tracking-widest">Logistics Management</span>
           </div>
         </div>
 
-        <nav className="flex-grow space-y-2 px-4 relative z-10">
-          <div className="hidden lg:block px-4 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Operasional Utama</div>
-          <a
-            className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
+        {/* Tab Selection Navigation */}
+        <div className="flex flex-col gap-sm flex-grow">
+          <a 
+            className={`flex items-center gap-md px-md py-sm rounded-lg transition-colors active:scale-95 duration-150 group ${
               activeTab === 'scan'
-                ? 'bg-gradient-to-r from-primary/20 to-transparent text-white font-bold border-l-4 border-primary shadow-sm'
-                : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-            }`}
+                ? 'text-primary font-bold border-r-4 border-primary bg-primary/5'
+                : 'text-secondary hover:bg-secondary-container/50'
+            }`} 
             href="#"
             onClick={(e) => {
               e.preventDefault();
               setActiveTab('scan');
+              setMobileMenuOpen(false);
             }}
           >
-            <span className={`material-symbols-outlined text-xl ${activeTab === 'scan' ? 'text-primary' : 'group-hover:scale-110 transition-transform'}`}>barcode_scanner</span>
-            <span className="hidden lg:block">Scan &amp; Claim</span>
+            <span className={`material-symbols-outlined text-[20px] ${activeTab === 'scan' ? 'text-primary' : ''}`} style={activeTab === 'scan' ? { fontVariationSettings: "'FILL' 1" } : {}}>
+              barcode_scanner
+            </span>
+            <span className="text-label-md font-label-md">Scan &amp; Claim</span>
           </a>
-          <a
-            className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group ${
+
+          <a 
+            className={`flex items-center gap-md px-md py-sm rounded-lg transition-colors active:scale-95 duration-150 group ${
               activeTab === 'track'
-                ? 'bg-gradient-to-r from-primary/20 to-transparent text-white font-bold border-l-4 border-primary shadow-sm'
-                : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-            }`}
+                ? 'text-primary font-bold border-r-4 border-primary bg-primary/5'
+                : 'text-secondary hover:bg-secondary-container/50'
+            }`} 
             href="#"
             onClick={(e) => {
               e.preventDefault();
               setActiveTab('track');
+              setMobileMenuOpen(false);
             }}
           >
-            <span className={`material-symbols-outlined text-xl ${activeTab === 'track' ? 'text-primary' : 'group-hover:scale-110 transition-transform'}`}>local_shipping</span>
-            <span className="hidden lg:block">Tracking Resi</span>
+            <span className={`material-symbols-outlined text-[20px] ${activeTab === 'track' ? 'text-primary' : ''}`} style={activeTab === 'track' ? { fontVariationSettings: "'FILL' 1" } : {}}>
+              location_on
+            </span>
+            <span className="text-label-md font-label-md">Tracking Resi</span>
           </a>
-          <a
-            className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all group"
-            href="#"
-            onClick={(e) => e.preventDefault()}
-          >
-            <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">history</span>
-            <span className="hidden lg:block font-semibold">Riwayat Klaim</span>
-          </a>
-          <a
-            className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all group"
-            href="#"
-            onClick={(e) => e.preventDefault()}
-          >
-            <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">analytics</span>
-            <span className="hidden lg:block font-semibold">Laporan Performa</span>
-          </a>
-        </nav>
 
-        <div className="mt-auto px-4 space-y-4 relative z-10">
-          <div className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 flex items-center gap-4 backdrop-blur-md">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white shrink-0 shadow-sm">
+          <a 
+            className="flex items-center gap-md px-md py-sm rounded-lg text-secondary hover:bg-secondary-container/50 transition-colors active:scale-95 duration-150 group" 
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              alert('Laporan Performa sedang disiapkan oleh tim analitik Mitraaja.');
+            }}
+          >
+            <span className="material-symbols-outlined text-[20px]">analytics</span>
+            <span className="text-label-md font-label-md">Laporan Performa</span>
+          </a>
+
+          <a 
+            className="flex items-center gap-md px-md py-sm rounded-lg text-secondary hover:bg-secondary-container/50 transition-colors active:scale-95 duration-150 group" 
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              alert('Fitur pengaturan akun & outlet belum tersedia.');
+            }}
+          >
+            <span className="material-symbols-outlined text-[20px]">settings</span>
+            <span className="text-label-md font-label-md">Settings</span>
+          </a>
+        </div>
+
+        {/* User Profile Area */}
+        <div className="mt-auto border-t border-surface-variant pt-md flex flex-col gap-sm">
+          <div className="flex items-center gap-md p-sm rounded-lg hover:bg-secondary-container/20 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-surface-variant">
               {userInitials}
             </div>
-            <div className="hidden lg:block overflow-hidden">
-              <p className="font-bold text-sm text-white truncate">{user.name}</p>
-              <p className="text-[11px] text-slate-400 font-semibold truncate mt-0.5">{user.storeName}</p>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-label-md font-label-md text-on-surface truncate font-semibold">{user.name}</span>
+              <span className="text-label-sm font-label-sm text-secondary truncate">NIA: {user.agentStaffId}</span>
             </div>
           </div>
-          <button
-            onClick={logout}
-            className="w-full flex items-center justify-center gap-3 p-3.5 rounded-xl text-sm font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 hover:text-rose-300 transition-all border border-rose-500/20 active:scale-[0.98]"
+          <button 
+            onClick={() => {
+              if (confirm('Apakah Anda yakin ingin mengakhiri sesi login?')) logout();
+            }}
+            className="flex items-center gap-md px-md py-sm rounded-lg text-rose-600 hover:bg-rose-50 transition-colors active:scale-95 duration-150 font-bold"
           >
-            <span className="material-symbols-outlined text-[18px]">logout</span>
-            <span className="hidden lg:block">Akhiri Sesi</span>
+            <span className="material-symbols-outlined text-[20px]">logout</span>
+            <span className="text-label-md font-label-md">Akhiri Sesi</span>
           </button>
         </div>
-      </aside>
+      </nav>
 
-      {/* Main Content Pane */}
-      <div className="flex-grow flex flex-col min-w-0 bg-[#f8fafc] relative h-screen overflow-hidden">
+      {/* Main Content Wrapper */}
+      <div className="flex-1 flex flex-col md:ml-64 h-screen relative overflow-hidden">
         
-        {/* Top Header Bar */}
-        <header className="h-20 flex items-center justify-between px-8 lg:px-12 shrink-0 border-b border-slate-200 bg-white/70 backdrop-blur-xl z-20 sticky top-0">
-          <div className="flex flex-col justify-center">
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              {activeTab === 'scan' ? 'Console Operations' : 'AWB Tracking Console'}
-            </h1>
-            <span className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Staff ID: <span className="font-bold text-slate-700 font-label-md">#{user.agentStaffId.slice(0, 8).toUpperCase()}</span>
-            </span>
+        {/* TopNavBar */}
+        <header className="fixed top-0 right-0 left-0 md:left-64 h-16 bg-surface/80 backdrop-blur-xl shadow-[0px_4px_12px_rgba(0,0,0,0.03)] z-30 flex justify-between items-center px-lg border-b border-surface-variant/50">
+          <div className="flex items-center gap-md">
+            {/* Mobile Menu Toggle (Hidden on Desktop) */}
+            <button 
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-sm rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-colors"
+            >
+              <span className="material-symbols-outlined">menu</span>
+            </button>
+            <div className="hidden md:flex flex-col">
+              <span className="text-title-lg font-title-lg text-on-surface font-semibold tracking-tight">
+                {activeTab === 'scan' ? 'Scan & Claim' : 'Tracking Resi'}
+              </span>
+            </div>
+            {/* Mobile Logo Title */}
+            <div className="md:hidden flex items-center gap-sm">
+              <span className="material-symbols-outlined text-primary text-headline-md">local_shipping</span>
+              <span className="text-title-lg font-title-lg text-primary tracking-tight font-bold">Mitraaja</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            {/* Search Bar */}
-            <div className="relative flex items-center bg-slate-100/80 border border-slate-200 focus-within:border-primary/40 focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/5 rounded-2xl px-4 py-2.5 shadow-sm transition-all duration-300">
-              <span className="material-symbols-outlined text-slate-400 mr-3">search</span>
-              <input
-                className="bg-transparent border-none text-sm w-48 lg:w-72 outline-none font-medium text-slate-700 placeholder:text-slate-400"
-                placeholder="Cari AWB, pengirim, atau status..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="material-symbols-outlined text-slate-400 hover:text-slate-600 text-[18px]">close</button>
-              )}
+          {/* Right Actions */}
+          <div className="flex items-center gap-lg">
+            <div className="hidden lg:flex items-center gap-md text-label-md font-label-md text-secondary border-r border-surface-variant/50 pr-lg">
+              <span className="flex items-center gap-xs">
+                <span className="w-2 h-2 rounded-full bg-primary-container"></span> Agent NIA: {user.agentStaffId}
+              </span>
+              <span className="flex items-center gap-xs">
+                <span className="material-symbols-outlined text-[16px]">storefront</span> Store: {user.storeName}
+              </span>
             </div>
-
-            {/* Notification */}
-            <button className="w-12 h-12 flex items-center justify-center hover:bg-slate-100 rounded-full relative transition-colors duration-200 text-slate-500 hover:text-slate-700">
-              <span className="material-symbols-outlined text-2xl">notifications</span>
-              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-primary rounded-full border-2 border-white"></span>
-            </button>
+            
+            <div className="flex items-center gap-sm">
+              <button 
+                onClick={() => alert('Tidak ada notifikasi baru.')}
+                className="p-sm rounded-full text-on-surface-variant hover:text-primary transition-colors active:opacity-70 relative"
+              >
+                <span className="material-symbols-outlined">notifications</span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary-container rounded-full border border-surface"></span>
+              </button>
+              <button 
+                onClick={() => alert('Hubungi pusat bantuan Mitraaja di nomor 1500618 jika ada kendala sistem.')}
+                className="p-sm rounded-full text-on-surface-variant hover:text-primary transition-colors active:opacity-70"
+              >
+                <span className="material-symbols-outlined">help_outline</span>
+              </button>
+            </div>
           </div>
         </header>
-      {/* Dashboard Main Scrollable Area */}
-        <main className="flex-grow p-6 lg:p-10 overflow-y-auto custom-scrollbar">
-          <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-8 lg:gap-10">
+
+        {/* Main Scrollable Canvas */}
+        <main className="flex-grow overflow-y-auto pt-24 pb-xl px-4 md:px-lg lg:px-xl bg-background scroll-smooth">
+          <div className="max-w-7xl mx-auto space-y-lg">
             
             {activeTab === 'scan' ? (
+              /* ================= SCAN TAB ================= */
               <>
-                {/* Left Operational Section (8 columns on Desktop) */}
-                <div className="col-span-12 xl:col-span-8 flex flex-col gap-8">
-                  
-                  {/* The Unified Scanner Terminal */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col relative">
-                    {/* Terminal Header */}
-                    <div className="px-6 py-4 bg-slate-900 flex justify-between items-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                      <div className="flex items-center gap-4 relative z-10">
-                        <div className="flex gap-1.5">
-                          <div className="w-3 h-3 rounded-full bg-rose-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                        </div>
-                        <span className="text-[11px] font-bold tracking-widest uppercase text-slate-300 font-label-md">AWB SCANNER TERMINAL v1.0.4</span>
+                {/* Top Section: Scanner & Quick Stats Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+                  {/* Scanner Area */}
+                  <div className="lg:col-span-8 bg-surface rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-lg flex flex-col justify-center min-h-[280px] relative overflow-hidden group">
+                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/5 rounded-full blur-3xl opacity-50 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div className="flex flex-col items-center max-w-md mx-auto w-full text-center relative z-10">
+                      <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-md shadow-sm border border-surface-variant relative">
+                        <span className="material-symbols-outlined text-primary-container text-[32px] group-focus-within:animate-pulse">
+                          qr_code_scanner
+                        </span>
+                        {/* Focus Indicator Dot */}
+                        <span className={`absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-surface transition-opacity shadow-[0_0_8px_rgba(34,197,94,0.5)] ${
+                          isFocused ? 'opacity-100 animate-pulse' : 'opacity-0'
+                        }`}></span>
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 relative z-10">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        READY TO SCAN
-                      </div>
-                    </div>
-
-                    {/* Scan Input Area */}
-                    <div className="p-8 border-b border-slate-100 bg-slate-50/50">
-                      <form onSubmit={handleScanSubmit} className="flex flex-col gap-3">
-                        <label htmlFor="awb_input" className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                          <span className="material-symbols-outlined text-[18px] text-primary">barcode_reader</span>
-                          Arahkan barcode scanner atau ketik resi
-                        </label>
-                        <div className="relative group">
-                          <input
-                            ref={inputRef}
-                            id="awb_input"
-                            type="text"
-                            className="w-full h-20 pl-8 pr-20 bg-white border-2 border-slate-200 focus:border-primary focus:ring-8 focus:ring-primary/5 rounded-2xl text-2xl font-label-md font-bold transition-all shadow-sm uppercase outline-none placeholder:text-slate-300 text-slate-800"
-                            placeholder="TAP &amp; SCAN BARCODE..."
-                            value={awbValue}
-                            onChange={(e) => setAwbValue(e.target.value)}
-                            disabled={isScanning}
-                            autoComplete="off"
-                          />
-                          <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center justify-center">
-                            {isScanning ? (
-                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-2xl animate-spin">sync</span>
-                              </div>
-                            ) : (
-                              <button type="submit" className="w-12 h-12 bg-slate-900 hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md">
-                                <span className="material-symbols-outlined text-2xl">arrow_forward</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-
-                    {/* Integrated Monitor Output */}
-                    <div className="min-h-[320px] flex flex-col justify-center items-center p-10 relative bg-white">
+                      <h2 className="text-title-lg font-title-lg text-on-surface mb-xs">Ready to Scan</h2>
+                      <p className="text-body-md font-body-md text-secondary mb-lg">
+                        Ensure your barcode scanner is connected, or type AWB manually.
+                      </p>
                       
-                      {scanResult === null ? (
-                        // IDLE
-                        <div className="text-center flex flex-col items-center max-w-md animate-fade-in">
-                          <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 border border-slate-100">
-                            <span className="material-symbols-outlined text-5xl text-slate-300">document_scanner</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-800 mb-2">Sistem Siap Digunakan</h3>
-                          <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                            Arahkan scanner ke barcode resi Anteraja untuk memulai proses klaim otomatis. Data akan diverifikasi secara real-time.
-                          </p>
-                        </div>
-                      ) : scanResult.status === 'searching' ? (
-                        // SEARCHING
-                        <div className="text-center w-full flex flex-col items-center py-10 relative">
-                          <div className="scan-animation absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)]"></div>
-                          <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6 animate-pulse">
-                            <span className="material-symbols-outlined text-5xl text-primary animate-spin">autorenew</span>
-                          </div>
-                          <h3 className="text-lg font-extrabold text-slate-800 mb-2 uppercase tracking-wide">Menghubungkan ke Gateway</h3>
-                          <p className="text-sm font-label-md text-primary font-semibold tracking-wider">
-                            MEMPROSES AWB: {scanResult.awb}
-                          </p>
-                        </div>
-                      ) : scanResult.status === 'success' ? (
-                        // SUCCESS
-                        <div className="w-full max-w-2xl bg-white border border-emerald-100 rounded-[2rem] p-8 shadow-2xl shadow-emerald-500/10 relative overflow-hidden animate-slide-in">
-                          {/* Decorative success splash */}
-                          <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-                          
-                          <div className="flex justify-between items-start mb-8 relative z-10">
-                            <div className="flex items-center gap-4">
-                              <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 text-white">
-                                <span className="material-symbols-outlined text-3xl font-bold">check</span>
-                              </div>
-                              <div>
-                                <h3 className="text-xl font-extrabold text-emerald-600 tracking-tight">KLAIM BERHASIL</h3>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Status: Verified in Gateway</p>
-                              </div>
-                            </div>
-                            <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full font-label-md tracking-wider">GATEWAY PASS</span>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-y border-slate-100 py-6 mb-8 relative z-10">
-                            <div>
-                              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Waybill (No. Resi)</span>
-                              <span className="text-xl font-extrabold text-slate-800 font-label-md tracking-wider">{scanResult.awb}</span>
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Destination (Kota)</span>
-                              <span className="text-sm font-bold text-slate-700">{scanResult.destinationCity}</span>
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Shipper (Pengirim)</span>
-                              <span className="text-sm font-bold text-slate-700">{scanResult.shipperName}</span>
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Receiver (Penerima)</span>
-                              <span className="text-sm font-bold text-slate-700">{scanResult.receiverName}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between relative z-10">
-                            <button
-                              onClick={handleNewSession}
-                              className="px-6 py-3.5 bg-slate-900 hover:bg-primary text-white rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all shadow-md active:scale-[0.98]"
-                            >
-                              Scan Paket Baru
-                            </button>
-                            <span className="font-label-md text-emerald-500 font-bold">{new Date().toLocaleTimeString('id-ID')}</span>
-                          </div>
-                        </div>
-                      ) : (
-                        // ERROR
-                        <div className="w-full max-w-2xl bg-white border border-rose-100 rounded-[2rem] p-8 shadow-2xl shadow-rose-500/10 relative overflow-hidden animate-slide-in">
-                          {/* Decorative error splash */}
-                          <div className="absolute -top-24 -right-24 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl"></div>
-
-                          <div className="flex justify-between items-start mb-8 relative z-10">
-                            <div className="flex items-center gap-4">
-                              <div className="w-14 h-14 bg-rose-500 rounded-full flex items-center justify-center shadow-lg shadow-rose-500/30 text-white">
-                                <span className="material-symbols-outlined text-3xl font-bold">close</span>
-                              </div>
-                              <div>
-                                <h3 className="text-xl font-extrabold text-rose-600 tracking-tight">KLAIM DITOLAK</h3>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Status: Discrepancy Found</p>
-                              </div>
-                            </div>
-                            <span className="text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-200 px-3.5 py-1.5 rounded-full font-label-md tracking-wider">GATEWAY BLOCK</span>
-                          </div>
-
-                          <div className="border-y border-slate-100 py-6 mb-8 relative z-10 flex flex-col gap-6">
-                            <div>
-                              <span className="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest block mb-1.5">Waybill (No. Resi)</span>
-                              <span className="text-xl font-extrabold text-slate-800 font-label-md tracking-wider">{scanResult.awb}</span>
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest block mb-2 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[16px]">info</span>
-                                Alasan Penolakan
-                              </span>
-                              <div className="p-4 bg-rose-50/50 border border-rose-100 rounded-xl">
-                                <span className="text-sm font-bold text-rose-700 leading-relaxed">{scanResult.message}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between relative z-10">
-                            <button
-                              onClick={handleNewSession}
-                              className="px-6 py-3.5 bg-slate-900 hover:bg-primary text-white rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all shadow-md active:scale-[0.98] flex items-center gap-2 group"
-                            >
-                              <span className="material-symbols-outlined text-[18px] group-hover:-rotate-180 transition-transform duration-500">refresh</span>
-                              Pindai Ulang AWB
-                            </button>
-                            <span className="font-label-md text-rose-400 font-bold">{new Date().toLocaleTimeString('id-ID')}</span>
-                          </div>
-                        </div>
-                      )}
-
+                      {/* Scan Form */}
+                      <form onSubmit={handleScanSubmit} className="w-full relative">
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                          search
+                        </span>
+                        <input 
+                          ref={inputRef}
+                          autoFocus
+                          className="w-full pl-12 pr-24 py-4 rounded-lg bg-surface border border-surface-variant text-body-lg font-body-lg text-on-surface placeholder:text-surface-dim focus:ring-0 focus:border-[#DBEAFE] focus:shadow-[0_0_0_3px_#DBEAFE] transition-all outline-none uppercase" 
+                          placeholder="Scan or enter AWB number..." 
+                          type="text"
+                          value={awbValue}
+                          onChange={(e) => setAwbValue(e.target.value)}
+                          disabled={isScanning}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() => setIsFocused(false)}
+                          autoComplete="off"
+                        />
+                        <button 
+                          type="submit"
+                          disabled={isScanning}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-primary-container text-on-primary-container rounded-md text-label-md font-label-md font-medium hover:bg-primary hover:text-white transition-colors shadow-sm disabled:opacity-50"
+                        >
+                          {isScanning ? 'Claiming...' : 'Claim'}
+                        </button>
+                      </form>
+                      
+                      <div className="mt-md flex items-center gap-xs text-label-sm font-label-sm text-secondary">
+                        <span className="material-symbols-outlined text-[14px]">keyboard</span>
+                        <span>Press Enter to submit manually</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* History Table */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-card">
-                    <div className="px-8 py-6 flex justify-between items-center bg-white border-b border-slate-100">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
-                          <span className="material-symbols-outlined text-slate-500">list_alt</span>
-                        </div>
-                        <div>
-                          <h3 className="font-extrabold text-sm uppercase tracking-wide text-slate-800">Riwayat Sesi Aktif</h3>
-                          <p className="text-xs text-slate-500 font-medium mt-0.5">Menampilkan {filteredHistory.length} dari {history.length} resi</p>
-                        </div>
+                  {/* Quick Stats Bento */}
+                  <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-md">
+                    {/* Stat Card 1: Total Scans */}
+                    <div className="bg-surface rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md flex items-center justify-between relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary-container"></div>
+                      <div>
+                        <p className="text-label-sm font-label-sm text-secondary mb-1">Total Scan Hari Ini</p>
+                        <p className="text-headline-lg font-headline-lg text-on-surface">{stats.total}</p>
                       </div>
-                      {/* Actions */}
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => {
-                            const el = document.querySelector('header input');
-                            if (el) (el as HTMLInputElement).focus();
-                          }}
-                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
-                          title="Cari resi"
-                        >
-                          <span className="material-symbols-outlined">filter_list</span>
-                        </button>
-                        <button 
-                          onClick={downloadCSV}
-                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
-                          title="Unduh CSV"
-                        >
-                          <span className="material-symbols-outlined">download</span>
-                        </button>
-                        <button 
-                          onClick={() => {
-                            if (confirm('Apakah Anda yakin ingin menghapus semua riwayat scan pada sesi ini?')) {
-                              setHistory([]);
-                              localStorage.removeItem('mitraaja_scan_history');
-                            }
-                          }}
-                          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                          title="Hapus semua riwayat"
-                        >
-                          <span className="material-symbols-outlined">delete</span>
-                        </button>
+                      <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                        <span className="material-symbols-outlined text-secondary">inventory_2</span>
                       </div>
                     </div>
-                    <div className="overflow-x-auto p-4">
-                      <table className="w-full text-left border-collapse">
-                        <thead>
-                          <tr className="text-[10px] uppercase font-extrabold text-slate-400 tracking-widest border-b border-slate-100">
-                            <th className="px-4 py-4 pl-6">No. Resi (AWB)</th>
-                            <th className="px-4 py-4">Pengirim</th>
-                            <th className="px-4 py-4">Status Klaim</th>
-                            <th className="px-4 py-4">Waktu</th>
-                            <th className="px-4 py-4 pr-6">Keterangan</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                          {filteredHistory.length === 0 ? (
-                            <tr>
-                              <td colSpan={5} className="px-6 py-16 text-center text-slate-400 bg-slate-50/50 rounded-xl">
-                                <span className="material-symbols-outlined text-5xl block mb-3 text-slate-300">receipt_long</span>
-                                <span className="text-sm font-semibold block text-slate-500">Belum ada riwayat pada sesi ini. Mulai lakukan scanning.</span>
-                              </td>
-                            </tr>
-                          ) : (
-                            filteredHistory.map((item) => {
-                              const timeStr = item.timestamp.toLocaleTimeString('id-ID', {
-                                hour: '2-digit', minute: '2-digit', second: '2-digit',
-                              });
-                              const isSuccess = item.status === 'success';
-                              return (
-                                <tr key={item.id} className="hover:bg-slate-50 transition-colors group cursor-default">
-                                  <td className="px-4 py-4 pl-6">
-                                    <span className="font-label-md text-[13px] font-extrabold text-slate-800 group-hover:text-primary transition-colors">{item.awb}</span>
-                                  </td>
-                                  <td className="px-4 py-4 text-xs font-bold text-slate-600">{item.shipperName}</td>
-                                  <td className="px-4 py-4">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-extrabold rounded-lg border ${
-                                      isSuccess ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'
-                                    }`}>
-                                      <span className={`w-1.5 h-1.5 rounded-full ${isSuccess ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
-                                      {isSuccess ? 'BERHASIL' : 'GAGAL'}
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-4 text-[11px] font-bold text-slate-400 font-label-md">{timeStr}</td>
-                                  <td className={`px-4 py-4 pr-6 text-xs font-medium ${isSuccess ? 'text-slate-500' : 'text-rose-600 font-bold'}`}>
-                                    {item.message}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          )}
-                        </tbody>
-                      </table>
+                    {/* Stat Card 2: Berhasil */}
+                    <div className="bg-surface rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md flex items-center justify-between relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-200"></div>
+                      <div>
+                        <p className="text-label-sm font-label-sm text-secondary mb-1">Berhasil Diklaim</p>
+                        <p className="text-headline-lg font-headline-lg text-on-surface">{stats.success}</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-green-700">check_circle</span>
+                      </div>
+                    </div>
+                    {/* Stat Card 3: Gagal/Tertunda */}
+                    <div className="bg-surface rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md flex items-center justify-between relative overflow-hidden">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-200"></div>
+                      <div>
+                        <p className="text-label-sm font-label-sm text-secondary mb-1">Klaim Gagal / Tertunda</p>
+                        <p className="text-headline-lg font-headline-lg text-on-surface">{stats.error}</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-amber-700">pending_actions</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Right Information Panel (4 columns on Desktop) */}
-                <div className="col-span-12 xl:col-span-4 flex flex-col gap-8">
-                  
-                  {/* Premium Session Counter Card */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 flex flex-col items-center relative overflow-hidden text-center group">
-                    {/* Abstract Background */}
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[100px] -z-0 transition-transform group-hover:scale-110"></div>
-                    
-                    <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-6 relative z-10">Total Scan Sesi Ini</h3>
-                    
-                    {/* Big Counter Value */}
-                    <div className="w-36 h-36 rounded-full bg-white border-[8px] border-slate-50 flex items-center justify-center shadow-[0_0_40px_-10px_rgba(0,0,0,0.05)] relative mb-8 z-10 transition-transform group-hover:scale-105">
-                      <span className="text-6xl font-black text-slate-800 font-label-md tracking-tighter">{stats.total}</span>
+                {/* Middle Section: Scan Result / Receipt Card (Dynamic states) */}
+                {scanResult && scanResult.status === 'success' && (
+                  <div className="bg-[#F0FDF4] rounded-xl border border-[#BBF7D0] shadow-[0px_8px_24px_rgba(0,0,0,0.04)] p-lg lg:p-xl relative overflow-hidden animate-fade-in">
+                    <div className="absolute -right-20 -top-20 opacity-10 pointer-events-none">
+                      <span className="material-symbols-outlined text-[200px] text-[#166534]">task_alt</span>
                     </div>
-
-                    {/* Substats Rate Bars */}
-                    <div className="w-full space-y-5 relative z-10">
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs font-extrabold text-emerald-600">
-                          <span className="flex items-center gap-2 uppercase tracking-wide">
-                            <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                            Berhasil
+                    <div className="flex flex-col lg:flex-row gap-lg items-start lg:items-center justify-between relative z-10">
+                      <div className="flex items-start gap-md">
+                        <div className="w-12 h-12 rounded-full bg-[#DCFCE7] flex items-center justify-center shrink-0 shadow-sm border border-[#BBF7D0]">
+                          <span className="material-symbols-outlined text-[#166534]">check</span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-sm mb-xs">
+                            <h3 className="text-title-lg font-title-lg text-[#14532D] font-semibold">Klaim Berhasil</h3>
+                            <span className="px-3 py-1 bg-[#DCFCE7] text-[#166534] text-label-sm font-label-sm rounded-full border border-[#BBF7D0]">
+                              Baru saja
+                            </span>
+                          </div>
+                          <p className="text-body-lg font-body-lg text-[#166534] font-mono font-medium tracking-tight">
+                            AWB: {scanResult.awb}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="w-full lg:w-px lg:h-16 bg-[#BBF7D0] my-sm lg:my-0"></div>
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-md w-full">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-label-sm font-label-sm text-[#166534]/70 uppercase tracking-wider">Pengirim</span>
+                          <span className="text-body-md font-body-md text-[#14532D] font-medium truncate">
+                            {scanResult.shipperName || '-'}
                           </span>
-                          <span>{stats.success} <span className="text-slate-400 font-semibold ml-1">({stats.successRate}%)</span></span>
                         </div>
-                        <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                          <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${stats.successRate}%` }}></div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs font-extrabold text-rose-600">
-                          <span className="flex items-center gap-2 uppercase tracking-wide">
-                            <span className="material-symbols-outlined text-[16px]">cancel</span>
-                            Ditolak
+                        <div className="flex flex-col gap-1">
+                          <span className="text-label-sm font-label-sm text-[#166534]/70 uppercase tracking-wider">Penerima</span>
+                          <span className="text-body-md font-body-md text-[#14532D] font-medium truncate">
+                            {scanResult.receiverName || '-'}
                           </span>
-                          <span>{stats.error} <span className="text-slate-400 font-semibold ml-1">({stats.errorRate}%)</span></span>
                         </div>
-                        <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                          <div className="h-full bg-gradient-to-r from-rose-400 to-rose-500 rounded-full transition-all duration-1000" style={{ width: `${stats.errorRate}%` }}></div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-label-sm font-label-sm text-[#166534]/70 uppercase tracking-wider">Tujuan</span>
+                          <div className="flex items-center gap-xs text-[#14532D] font-medium">
+                            <span className="material-symbols-outlined text-[16px]">pin_drop</span>
+                            <span className="truncate">{scanResult.destinationCity || '-'}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                )}
 
-                  {/* Gateway Connection Details Card */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card flex flex-col gap-6">
-                    <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px]">dns</span>
-                      Status Gateway
-                    </h3>
-                    
-                    <div className="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl gap-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-inner ${isMockMode ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
-                        <span className="material-symbols-outlined text-2xl">{isMockMode ? 'science' : 'wifi'}</span>
+                {scanResult && scanResult.status === 'error' && (
+                  <div className="bg-[#FEF2F2] rounded-xl border border-[#FCA5A5] shadow-[0px_8px_24px_rgba(0,0,0,0.04)] p-lg lg:p-xl relative overflow-hidden animate-fade-in">
+                    <div className="absolute -right-20 -top-20 opacity-10 pointer-events-none">
+                      <span className="material-symbols-outlined text-[200px] text-[#991B1B]">cancel</span>
+                    </div>
+                    <div className="flex flex-col lg:flex-row gap-lg items-start lg:items-center justify-between relative z-10">
+                      <div className="flex items-start gap-md">
+                        <div className="w-12 h-12 rounded-full bg-[#FEE2E2] flex items-center justify-center shrink-0 shadow-sm border border-[#FCA5A5]">
+                          <span className="material-symbols-outlined text-[#991B1B]">close</span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-sm mb-xs">
+                            <h3 className="text-title-lg font-title-lg text-[#7F1D1D] font-semibold">Klaim Ditolak</h3>
+                            <span className="px-3 py-1 bg-[#FEE2E2] text-[#991B1B] text-label-sm font-label-sm rounded-full border border-[#FCA5A5]">
+                              Gagal
+                            </span>
+                          </div>
+                          <p className="text-body-lg font-body-lg text-[#991B1B] font-mono font-medium tracking-tight">
+                            AWB: {scanResult.awb}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-sm font-extrabold text-slate-800 block">
-                          {isMockMode ? 'Developer Sandbox' : 'Production Active'}
+                      <div className="w-full lg:w-px lg:h-16 bg-[#FCA5A5] my-sm lg:my-0"></div>
+                      <div className="flex-1 w-full">
+                        <span className="text-label-sm font-label-sm text-[#991B1B]/70 uppercase tracking-wider block mb-1">
+                          Alasan Penolakan / Pesan Error
                         </span>
-                        <span className="text-xs text-slate-500 font-semibold mt-0.5 block">
-                          {isMockMode ? 'Simulated API Responses' : 'Live Connected to API'}
+                        <p className="text-body-md font-body-md text-[#7F1D1D] font-medium leading-relaxed">
+                          {scanResult.message}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {scanResult && scanResult.status === 'searching' && (
+                  <div className="bg-[#EFF6FF] rounded-xl border border-[#BFDBFE] shadow-[0px_8px_24px_rgba(0,0,0,0.04)] p-lg lg:p-xl relative overflow-hidden animate-fade-in">
+                    <div className="absolute -right-20 -top-20 opacity-10 pointer-events-none">
+                      <span className="material-symbols-outlined text-[200px] text-[#1E40AF]">sync</span>
+                    </div>
+                    <div className="flex flex-col lg:flex-row gap-lg items-start lg:items-center justify-between relative z-10">
+                      <div className="flex items-start gap-md">
+                        <div className="w-12 h-12 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0 shadow-sm border border-[#BFDBFE]">
+                          <span className="material-symbols-outlined text-[#1E40AF] animate-spin">sync</span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-sm mb-xs">
+                            <h3 className="text-title-lg font-title-lg text-[#1E3A8A] font-semibold">Memverifikasi AWB...</h3>
+                          </div>
+                          <p className="text-body-lg font-body-lg text-[#1E40AF] font-mono font-medium tracking-tight">
+                            AWB: {scanResult.awb}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="w-full lg:w-px lg:h-16 bg-[#BFDBFE] my-sm lg:my-0"></div>
+                      <div className="flex-1 w-full">
+                        <span className="text-label-sm font-label-sm text-[#1E40AF]/70 uppercase tracking-wider block mb-1">
+                          Gateway Action
                         </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Latency</span>
-                        <span className="font-label-md text-emerald-600 font-bold text-lg">12<span className="text-xs">ms</span></span>
-                      </div>
-                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Uptime</span>
-                        <span className="font-label-md text-slate-700 font-bold text-lg">99.9<span className="text-xs">%</span></span>
+                        <p className="text-body-md font-body-md text-[#1E3A8A] font-medium animate-pulse">
+                          {scanResult.message}
+                        </p>
                       </div>
                     </div>
                   </div>
+                )}
 
-                  {/* Quick Navigation Menu Actions */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card">
-                    <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px]">apps</span>
-                      Tindakan Cepat
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={handleNewSession}
-                        className="col-span-2 p-4 bg-white border-2 border-slate-100 hover:border-primary focus:border-primary rounded-2xl flex items-center gap-4 transition-all shadow-sm group"
+                {/* Bottom Section: Recent Scans Table */}
+                <div className="bg-surface rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] overflow-hidden">
+                  <div className="p-md lg:px-lg py-md border-b border-surface-variant flex items-center justify-between bg-surface">
+                    <h3 className="text-title-lg font-title-lg text-on-surface font-semibold">Recent Scans</h3>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={downloadCSV}
+                        className="flex items-center gap-xs px-3 py-1.5 rounded-md bg-surface-container hover:bg-surface-variant transition-colors text-label-md font-label-md text-on-surface-variant border border-surface-variant shadow-sm"
                       >
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
-                          <span className="material-symbols-outlined text-primary group-hover:text-white transition-colors">add_box</span>
-                        </div>
-                        <div className="text-left">
-                          <span className="text-sm font-bold text-slate-800 block">Sesi Baru</span>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Reset Terminal</span>
-                        </div>
+                        <span className="material-symbols-outlined text-[16px]">download</span>
+                        Download CSV
                       </button>
-                      
-                      <button
-                        onClick={() => window.open('https://wa.me/6281234567890?text=Halo%20Admin%20Anteraja,%20saya%20menghadapi%20kendala%20pada%20portal%20Mitraaja%20Gateway.', '_blank')}
-                        className="p-4 bg-white border-2 border-slate-100 hover:border-rose-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
+                      <button 
+                        onClick={() => {
+                          if (confirm('Apakah Anda yakin ingin menghapus semua riwayat scan pada sesi ini?')) {
+                            setHistory([]);
+                            localStorage.removeItem('mitraaja_scan_history');
+                          }
+                        }}
+                        className="flex items-center gap-xs px-3 py-1.5 rounded-md bg-surface-container hover:bg-red-50 hover:text-red-600 transition-colors text-label-md font-label-md text-on-surface-variant border border-surface-variant shadow-sm"
                       >
-                        <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
-                          <span className="material-symbols-outlined text-rose-500">report</span>
-                        </div>
-                        <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Lapor<br/>Masalah</span>
-                      </button>
-
-                      <button
-                        onClick={() => window.open('https://anteraja.id/contact-us', '_blank')}
-                        className="p-4 bg-white border-2 border-slate-100 hover:border-blue-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                          <span className="material-symbols-outlined text-blue-500">support_agent</span>
-                        </div>
-                        <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Pusat<br/>Bantuan</span>
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        Clear
                       </button>
                     </div>
                   </div>
-
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-[#F8FAFC] border-b border-surface-variant">
+                          <th className="px-md py-sm text-label-sm font-label-sm text-secondary uppercase tracking-wider font-semibold w-12 text-center">#</th>
+                          <th className="px-md py-sm text-label-sm font-label-sm text-secondary uppercase tracking-wider font-semibold">AWB Number</th>
+                          <th className="px-md py-sm text-label-sm font-label-sm text-secondary uppercase tracking-wider font-semibold">Shipper (Pengirim)</th>
+                          <th className="px-md py-sm text-label-sm font-label-sm text-secondary uppercase tracking-wider font-semibold">Time</th>
+                          <th className="px-md py-sm text-label-sm font-label-sm text-secondary uppercase tracking-wider font-semibold">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-surface-variant text-body-md font-body-md">
+                        {filteredHistory.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-16 text-center text-secondary bg-surface-container-lowest">
+                              <span className="material-symbols-outlined text-5xl block mb-3 text-surface-dim">receipt_long</span>
+                              <span className="text-sm font-semibold block text-slate-400">Belum ada riwayat pada sesi ini. Mulai lakukan scanning.</span>
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredHistory.map((item, idx) => {
+                            const timeStr = item.timestamp.toLocaleTimeString('id-ID', {
+                              hour: '2-digit', minute: '2-digit', second: '2-digit',
+                            });
+                            const isSuccess = item.status === 'success';
+                            return (
+                              <tr key={item.id} className="hover:bg-[#F8FAFC] transition-colors group">
+                                <td className="px-md py-3 text-center text-secondary">{idx + 1}</td>
+                                <td className="px-md py-3 font-mono text-on-surface font-semibold">{item.awb}</td>
+                                <td className="px-md py-3 text-on-surface-variant">{item.shipperName}</td>
+                                <td className="px-md py-3 text-secondary font-mono">{timeStr}</td>
+                                <td className="px-md py-3">
+                                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-label-sm font-label-sm font-medium ${
+                                    isSuccess ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FEF3C7] text-[#92400E]'
+                                  }`}>
+                                    {isSuccess ? 'Berhasil' : 'Gagal'}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </>
             ) : (
+              /* ================= TRACK TAB ================= */
               <>
-                {/* Left Operational Section (8 columns on Desktop) */}
-                <div className="col-span-12 xl:col-span-8 flex flex-col gap-8">
-                  {/* The Tracking Terminal */}
-                  <div className="bg-white border border-slate-200 rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col relative">
-                    <div className="px-6 py-4 bg-slate-900 flex justify-between items-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                      <div className="flex items-center gap-4 relative z-10">
-                        <div className="flex gap-1.5">
-                          <div className="w-3 h-3 rounded-full bg-rose-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                          <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                        </div>
-                        <span className="text-[11px] font-bold tracking-widest uppercase text-slate-300 font-label-md">AWB REAL-TIME TRACKING SYSTEM</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-sky-400 uppercase tracking-widest bg-sky-500/10 px-3 py-1 rounded-lg border border-sky-500/20 relative z-10">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-                        ONLINE TRACKING
-                      </div>
-                    </div>
-
-                    <div className="p-8 border-b border-slate-100 bg-slate-50/50">
-                      <form onSubmit={handleTrackingSubmit} className="flex flex-col gap-3">
-                        <label htmlFor="tracking_input" className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                          <span className="material-symbols-outlined text-[18px] text-primary">local_shipping</span>
-                          Masukkan Nomor Waybill (AWB) / Resi Anteraja
-                        </label>
-                        <div className="relative group">
-                          <input
-                            ref={trackingInputRef}
-                            id="tracking_input"
-                            type="text"
-                            className="w-full h-20 pl-8 pr-20 bg-white border-2 border-slate-200 focus:border-primary focus:ring-8 focus:ring-primary/5 rounded-2xl text-2xl font-label-md font-bold transition-all shadow-sm uppercase outline-none placeholder:text-slate-300 text-slate-800"
-                            placeholder="Ketik AWB (Misal: 11003838770507)..."
-                            value={trackingAwb}
-                            onChange={(e) => setTrackingAwb(e.target.value)}
-                            disabled={isTracking}
-                            autoComplete="off"
-                          />
-                          <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center justify-center">
-                            {isTracking ? (
-                              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-2xl animate-spin">sync</span>
-                              </div>
-                            ) : (
-                              <button type="submit" className="w-12 h-12 bg-slate-900 hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md">
-                                <span className="material-symbols-outlined text-2xl">search</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-
-                    {/* Integrated Monitor Output for Tracking */}
-                    <div className="min-h-[320px] flex flex-col p-8 bg-white relative">
-                      {isTracking ? (
-                        <div className="text-center w-full flex flex-col items-center py-16 my-auto relative">
-                          <div className="scan-animation absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)]"></div>
-                          <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6 animate-pulse">
-                            <span className="material-symbols-outlined text-5xl text-primary animate-spin">sync</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-800 mb-2">Menghubungkan ke API Anteraja</h3>
-                          <p className="text-sm font-label-md text-primary font-semibold tracking-wider">
-                            MELACAK AWB: {trackingAwb}
-                          </p>
-                        </div>
-                      ) : trackingError ? (
-                        <div className="text-center flex flex-col items-center max-w-md mx-auto my-auto py-10">
-                          <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mb-6 border border-rose-100">
-                            <span className="material-symbols-outlined text-4xl text-rose-500">error</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-800 mb-2">Pelacakan Gagal</h3>
-                          <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                            {trackingError}
-                          </p>
-                        </div>
-                      ) : trackingResult === null ? (
-                        <div className="text-center flex flex-col items-center max-w-md mx-auto my-auto py-10 animate-fade-in">
-                          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 border border-slate-100">
-                            <span className="material-symbols-outlined text-4xl text-slate-300">search</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-800 mb-2">Lacak Paket Real-Time</h3>
-                          <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                            Masukkan nomor AWB di atas, atau gunakan resi contoh di sebelah kanan untuk melihat detail pelacakan langsung dari sistem Anteraja.
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="w-full flex flex-col animate-fade-in">
-                          <h3 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[18px]">history</span>
-                            Riwayat Perjalanan Paket
-                          </h3>
-                          <div className="flex flex-col">
-                            {trackingResult.history.map((event: any, idx: number) => {
-                              const details = getTrackingStatusDetails(event.tracking_code, event.message.id);
-                              const isFirst = idx === 0;
-                              return (
-                                <div key={idx} className="relative pl-10 pb-8 group last:pb-0">
-                                  {idx < trackingResult.history.length - 1 && (
-                                    <div className="absolute left-[15px] top-8 bottom-0 w-0.5 bg-slate-200 group-hover:bg-primary/20 transition-colors"></div>
-                                  )}
-                                  <div className={`absolute left-0 top-1.5 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-transform group-hover:scale-110 z-10 ${
-                                    isFirst 
-                                      ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25' 
-                                      : 'bg-white border-slate-300 text-slate-500'
-                                  }`}>
-                                    <span className="material-symbols-outlined text-[16px]">{details.icon}</span>
-                                  </div>
-                                  <div className={`p-5 rounded-2xl border transition-all duration-300 ${
-                                    isFirst 
-                                      ? 'bg-slate-50 border-slate-200/80 shadow-md shadow-slate-100' 
-                                      : 'bg-white border-slate-100 hover:border-slate-200'
-                                  }`}>
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                                      <h4 className={`text-sm font-extrabold tracking-tight ${isFirst ? 'text-slate-800 font-black' : 'text-slate-700'}`}>
-                                        {details.title}
-                                      </h4>
-                                      <span className="text-[10px] font-bold text-slate-400 font-label-md bg-slate-100 px-2.5 py-1 rounded-full">
-                                        {event.timestamp}
-                                      </span>
-                                    </div>
-                                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                                      {event.message.id}
-                                    </p>
-                                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-extrabold rounded-md border mt-3 uppercase tracking-wider ${details.colorClass}`}>
-                                      <span className={`w-1 h-1 rounded-full ${details.dotColor}`}></span>
-                                      Status {event.tracking_code} • {details.title}
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                {/* Search Section */}
+                <div className="mb-lg">
+                  <h1 className="text-headline-lg font-headline-lg text-on-background mb-xs">Track Shipment</h1>
+                  <p className="text-body-md font-body-md text-secondary mb-md">
+                    Enter the Airway Bill (AWB) to view current status and history.
+                  </p>
+                  
+                  {/* Track Form */}
+                  <form onSubmit={handleTrackingSubmit} className="relative max-w-2xl">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary">
+                      search
+                    </span>
+                    <input 
+                      ref={trackingInputRef}
+                      className="w-full pl-12 pr-24 py-3 rounded-lg border border-surface-variant bg-surface-container-lowest text-body-lg font-body-lg focus:outline-none focus:ring-2 focus:ring-secondary-container focus:border-secondary-container transition-all shadow-sm uppercase" 
+                      placeholder="e.g. 11003838770507" 
+                      type="text" 
+                      value={trackingAwb}
+                      onChange={(e) => setTrackingAwb(e.target.value)}
+                      disabled={isTracking}
+                    />
+                    <button 
+                      type="submit"
+                      disabled={isTracking}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-container text-on-primary-container px-4 py-1.5 rounded-md text-label-md font-label-md hover:bg-primary hover:text-white transition-colors shadow-sm disabled:opacity-50"
+                    >
+                      {isTracking ? 'Tracking...' : 'Track'}
+                    </button>
+                  </form>
                 </div>
 
-                {/* Right Information Panel (4 columns on Desktop) */}
-                <div className="col-span-12 xl:col-span-4 flex flex-col gap-8 animate-slide-in">
-                  {trackingResult ? (
-                    <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card flex flex-col gap-6">
-                      <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px]">info</span>
-                        Informasi Paket
-                      </h3>
-                      
-                      <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl flex flex-col gap-4">
-                        <div>
-                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Nomor AWB</span>
-                          <span className="text-lg font-black text-slate-800 font-label-md tracking-wider">{trackingResult.awb}</span>
+                {/* Layout Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+                  
+                  {/* Left Column: Package Info & Metadata */}
+                  <div className="lg:col-span-5 flex flex-col gap-lg">
+                    {trackingResult ? (
+                      <>
+                        {/* Package Summary Card */}
+                        <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] overflow-hidden relative animate-fade-in">
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+                          <div className="p-md md:p-lg">
+                            <div className="flex justify-between items-start mb-md">
+                              <div>
+                                <span className="text-label-sm font-label-sm text-secondary uppercase tracking-wider block mb-1">AWB Number</span>
+                                <h2 className="text-title-lg font-title-lg text-on-surface font-bold font-mono tracking-wide">{trackingResult.awb}</h2>
+                              </div>
+                              <span className={`px-3 py-1 rounded-full text-label-sm font-label-sm inline-flex items-center gap-1 shadow-sm ${
+                                trackingResult.history[0]?.tracking_code === '250'
+                                  ? 'bg-[#D1FAE5] text-[#065F46]'
+                                  : trackingResult.history[0]?.tracking_code === '255'
+                                  ? 'bg-purple-100 text-purple-700'
+                                  : 'bg-[#FEF3C7] text-[#92400E]'
+                              }`}>
+                                <span className="material-symbols-outlined text-[14px]">
+                                  {trackingResult.history[0]?.tracking_code === '250' ? 'check_circle' : 'pending'}
+                                </span>
+                                {trackingResult.history[0]?.tracking_code === '250' ? 'Delivered' : trackingResult.history[0]?.tracking_code === '255' ? 'Returned' : 'In Transit'}
+                              </span>
+                            </div>
+                            <div className="h-px w-full bg-surface-variant mb-md"></div>
+                            <div className="grid grid-cols-2 gap-y-md gap-x-sm">
+                              <div>
+                                <span className="text-label-sm font-label-sm text-secondary block mb-1">Service Type</span>
+                                <span className="text-body-md font-body-md text-on-surface font-semibold">
+                                  {trackingResult.detail.service_code || 'Next Day Delivery'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-label-sm font-label-sm text-secondary block mb-1">Weight</span>
+                                <span className="text-body-md font-body-md text-on-surface font-semibold">
+                                  {(trackingResult.detail.weight / 1000).toFixed(2)} kg
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-label-sm font-label-sm text-secondary block mb-1">Sender</span>
+                                <span className="text-body-md font-body-md text-on-surface font-semibold block truncate max-w-[160px]" title={trackingResult.detail.sender.name}>
+                                  {trackingResult.detail.sender.name || 'TechStore JKT'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-label-sm font-label-sm text-secondary block mb-1">Receiver</span>
+                                <span className="text-body-md font-body-md text-on-surface font-semibold block truncate max-w-[160px]" title={trackingResult.detail.receiver.name}>
+                                  {trackingResult.detail.receiver.name || 'Budi Santoso'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Layanan</span>
-                            <span className="text-xs font-bold text-slate-700">{trackingResult.detail.service_code || 'Regular'}</span>
+
+                        {/* Map Placeholder */}
+                        <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] h-64 overflow-hidden relative">
+                          <div className="w-full h-full bg-cover bg-center opacity-80 mix-blend-multiply filter grayscale-[30%]" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5DZZfUgibf1oEHVyrFuJ627dtU-jLbdBnkblforsn4AdKYAlqn4VGMcFMa83zzqQEYviED3MxedFYVv6XSW0PYgHOmgU8vzqoyFolKCw-h3xsRBmsY78tYq1jZvcQytaQlbwyhnqK0LFOgYfJKv89KTh2HFT5_nZ35TjJpbupEi6T6MchtklnfAe9KiIeIASvgKcjCK0Uxgaf9ZehY21Df712PLegzrYx2bl2kHztfodJqBHIx6lY77ecZUi_kdMJ8b4tst7723hl')" }}></div>
+                          <div className="absolute bottom-4 left-4 bg-surface/90 backdrop-blur-sm px-3 py-2 rounded-lg border border-surface-variant shadow-sm flex items-center gap-2">
+                            <span className="material-symbols-outlined text-secondary text-[16px]">location_on</span>
+                            <span className="text-label-md font-label-md text-on-surface">
+                              Destination: {trackingResult.detail.receiver.address?.split(',').slice(-1)[0]?.trim() || 'South Jakarta'}
+                            </span>
                           </div>
-                          <div>
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Berat Paket</span>
-                            <span className="text-xs font-bold text-slate-700">{(trackingResult.detail.weight / 1000).toFixed(2)} Kg</span>
-                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      /* If No Tracking Result (Show Sandbox Helper) */
+                      <div className="flex flex-col gap-lg w-full">
+                        {/* Uji Coba Card */}
+                        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg flex flex-col gap-sm">
+                          <h3 className="text-title-lg font-title-lg text-on-surface font-semibold flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">bug_report</span>
+                            Uji Coba Sistem
+                          </h3>
+                          <p className="text-xs text-secondary leading-relaxed font-medium">
+                            Anda dapat menguji fitur pelacakan ini menggunakan AWB riil Anteraja di bawah untuk melihat detail riwayat pengiriman.
+                          </p>
+                          <button
+                            onClick={() => {
+                              setTrackingAwb('11003838770507');
+                              setIsTracking(true);
+                              setTrackingError('');
+                              setTrackingResult(null);
+                              fetch('/api/track', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ awb: '11003838770507' }),
+                              })
+                                .then(res => res.json())
+                                .then(data => {
+                                  if (data.status === 'success') {
+                                    setTrackingResult(data.data);
+                                  } else {
+                                    setTrackingError(data.message || 'AWB tidak ditemukan.');
+                                  }
+                                })
+                                .catch(() => setTrackingError('Terjadi kesalahan koneksi.'))
+                                .finally(() => setIsTracking(false));
+                            }}
+                            className="w-full flex items-center justify-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary to-rose-600 hover:from-rose-600 hover:to-primary text-white text-xs font-extrabold shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+                          >
+                            <span className="material-symbols-outlined text-sm">play_arrow</span>
+                            Lacak Resi 11003838770507
+                          </button>
+                        </div>
+                        
+                        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg">
+                          <h3 className="text-title-sm font-semibold text-on-surface mb-2 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[18px]">help</span>
+                            Informasi Tambahan
+                          </h3>
+                          <p className="text-xs text-secondary leading-relaxed font-medium">
+                            Pelacakan ini menggunakan data real-time langsung dari gateway API Anteraja. Status retur menandakan paket dikembalikan ke alamat asal karena kendala penerima tidak dikenal.
+                          </p>
                         </div>
                       </div>
-
-                      <div className="flex flex-col gap-4 border-t border-slate-100 pt-4">
-                        <div className="flex items-start gap-4">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200">
-                            <span className="material-symbols-outlined text-[16px] text-slate-600">person</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Nama Pengirim</span>
-                            <span className="text-xs font-bold text-slate-700">{trackingResult.detail.sender.name || '-'}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4 border-t border-slate-50 pt-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200">
-                            <span className="material-symbols-outlined text-[16px] text-slate-600">person_pin</span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Nama Penerima</span>
-                            <span className="text-xs font-bold text-slate-700">{trackingResult.detail.receiver.name || '-'}</span>
-                          </div>
-                        </div>
-                        {trackingResult.detail.receiver.address && trackingResult.detail.receiver.address !== '*****' && (
-                          <div className="flex items-start gap-4 border-t border-slate-50 pt-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200">
-                              <span className="material-symbols-outlined text-[16px] text-slate-600">home</span>
-                            </div>
-                            <div>
-                              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Alamat Pengiriman</span>
-                              <span className="text-xs font-bold text-slate-700 leading-relaxed">{trackingResult.detail.receiver.address}</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card flex flex-col gap-6">
-                      <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px]">bug_report</span>
-                        Uji Coba Sistem
-                      </h3>
-                      <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                        Anda dapat menguji fitur pelacakan ini menggunakan AWB riil Anteraja di bawah untuk melihat detail riwayat pengiriman.
-                      </p>
-                      <button
-                        onClick={() => {
-                          setTrackingAwb('11003838770507');
-                          // Programmatic form submit trigger
-                          setTimeout(() => {
-                            const event = new Event('submit', { bubbles: true, cancelable: true });
-                            const form = document.querySelector('form');
-                            if (form) form.dispatchEvent(event);
-                          }, 50);
-                        }}
-                        className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-primary to-rose-600 hover:from-rose-600 hover:to-primary text-white text-xs font-extrabold shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
-                      >
-                        <span className="material-symbols-outlined text-sm">play_arrow</span>
-                        Lacak Resi 11003838770507
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card flex flex-col gap-4">
-                    <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px]">help</span>
-                      Informasi Tambahan
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                      Pelacakan ini menggunakan data real-time langsung dari gateway API Anteraja. Status retur menandakan paket dikembalikan ke alamat asal karena kendala penerima tidak dikenal.
-                    </p>
+                    )}
                   </div>
+
+                  {/* Right Column: Timeline */}
+                  <div className="lg:col-span-7">
+                    {isTracking ? (
+                      <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg h-full flex flex-col items-center justify-center py-16">
+                        <span className="material-symbols-outlined text-4xl text-primary animate-spin mb-3">sync</span>
+                        <span className="text-sm font-semibold text-secondary animate-pulse">Menghubungkan ke API Anteraja...</span>
+                      </div>
+                    ) : trackingError ? (
+                      <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg h-full flex flex-col items-center justify-center text-center py-16">
+                        <span className="material-symbols-outlined text-4xl text-rose-500 mb-3">error</span>
+                        <h4 className="text-body-lg font-bold text-on-surface mb-1">Pelacakan Gagal</h4>
+                        <span className="text-sm text-secondary">{trackingError}</span>
+                      </div>
+                    ) : trackingResult === null ? (
+                      <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg h-full flex flex-col items-center justify-center text-center py-16 animate-fade-in">
+                        <div className="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center mb-6 border border-surface-variant">
+                          <span className="material-symbols-outlined text-4xl text-secondary">search</span>
+                        </div>
+                        <h3 className="text-lg font-bold text-on-surface mb-2">Lacak Paket Real-Time</h3>
+                        <p className="text-sm text-secondary leading-relaxed font-medium max-w-sm">
+                          Masukkan nomor AWB di atas, atau gunakan resi contoh di sebelah kiri untuk melihat detail pelacakan langsung dari sistem Anteraja.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-[0px_4px_12px_rgba(0,0,0,0.03)] p-md md:p-lg h-full animate-fade-in">
+                        <h3 className="text-title-lg font-title-lg text-on-surface mb-xl font-semibold">Tracking History</h3>
+                        <div className="relative pl-6 md:pl-8 space-y-xl before:content-[''] before:absolute before:left-[11px] md:before:left-[15px] before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-variant">
+                          
+                          {trackingResult.history.map((event: any, idx: number) => {
+                            const details = getTrackingStatusDetails(event.tracking_code, event.message.id);
+                            const isFirst = idx === 0;
+                            return (
+                              <div key={idx} className="relative group">
+                                <div className={`absolute -left-[35px] md:-left-[39px] w-8 h-8 rounded-full border-2 border-surface-container-lowest shadow-sm flex items-center justify-center z-10 transition-transform group-hover:scale-110 ${
+                                  isFirst 
+                                    ? 'bg-[#D1FAE5] border-white text-[#065F46]' 
+                                    : 'bg-surface-container-highest border-slate-300 text-slate-500'
+                                }`}>
+                                  <span 
+                                    className={`material-symbols-outlined text-[16px] ${isFirst ? 'text-[#065F46]' : 'text-secondary'}`} 
+                                    style={isFirst ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                  >
+                                    {details.icon}
+                                  </span>
+                                </div>
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 mb-2">
+                                  <h4 className={`text-body-lg font-body-lg text-on-surface ${isFirst ? 'font-semibold text-emerald-800' : 'font-medium'}`}>
+                                    {details.title}
+                                  </h4>
+                                  <span className="text-label-sm font-label-sm text-secondary whitespace-nowrap">{event.timestamp}</span>
+                                </div>
+                                <p className="text-body-md font-body-md text-secondary leading-relaxed">{event.message.id}</p>
+                              </div>
+                            );
+                          })}
+
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               </>
             )}
+
           </div>
         </main>
       </div>
+
     </div>
   );
 }
