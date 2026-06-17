@@ -25,7 +25,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login-container">
+    <div className="login-container tech-grid-bg">
       {/* Ambient glowing background mesh shapes */}
       <div className="bg-glow bg-glow-1 animate-float-1"></div>
       <div className="bg-glow bg-glow-2 animate-float-2"></div>
