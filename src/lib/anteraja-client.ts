@@ -261,10 +261,14 @@ async function realSearchAWB(
 
   const body = await response.json();
   if (body.status !== 0) {
-    if (body.status === 404 || !body.content || body.content.length === 0) {
+    if (body.status === 404) {
       return null;
     }
     throw new Error(body.info || 'Gagal mencari AWB.');
+  }
+
+  if (!body.content || body.content.length === 0) {
+    return null;
   }
 
   const task = body.content[0];

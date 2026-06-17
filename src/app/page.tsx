@@ -63,6 +63,32 @@ export default function ScannerPage() {
     };
   }, [activeTab]);
 
+  // Load scan history from localStorage on client-side mount
+  useEffect(() => {
+    const saved = localStorage.getItem('mitraaja_scan_history');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const formatted = parsed.map((item: any) => ({
+          ...item,
+          timestamp: new Date(item.timestamp),
+        }));
+        setHistory(formatted);
+      } catch (e) {
+        console.error('Failed to parse saved scan history', e);
+      }
+    }
+  }, []);
+
+  // Persist scan history to localStorage
+  useEffect(() => {
+    if (history.length > 0) {
+      localStorage.setItem('mitraaja_scan_history', JSON.stringify(history));
+    } else {
+      localStorage.removeItem('mitraaja_scan_history');
+    }
+  }, [history]);
+
   const stats = useMemo(() => {
     const total = history.length;
     const success = history.filter((h) => h.status === 'success').length;
@@ -259,6 +285,30 @@ export default function ScannerPage() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+  }
+
+  function downloadCSV() {
+    if (history.length === 0) {
+      alert('Tidak ada riwayat untuk diunduh.');
+      return;
+    }
+    const headers = ['AWB', 'Shipper', 'Status', 'Timestamp', 'Message'];
+    const rows = history.map(item => [
+      item.awb,
+      item.shipperName,
+      item.status.toUpperCase(),
+      item.timestamp.toISOString(),
+      item.message
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(','), ...rows.map(e => e.map(val => `"${val.replace(/"/g, '""')}"`).join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `riwayat_scan_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   // Loading state
@@ -618,8 +668,35 @@ export default function ScannerPage() {
                       </div>
                       {/* Actions */}
                       <div className="flex gap-2">
-                        <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"><span className="material-symbols-outlined">filter_list</span></button>
-                        <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"><span className="material-symbols-outlined">download</span></button>
+                        <button 
+                          onClick={() => {
+                            const el = document.querySelector('header input');
+                            if (el) (el as HTMLInputElement).focus();
+                          }}
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                          title="Cari resi"
+                        >
+                          <span className="material-symbols-outlined">filter_list</span>
+                        </button>
+                        <button 
+                          onClick={downloadCSV}
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                          title="Unduh CSV"
+                        >
+                          <span className="material-symbols-outlined">download</span>
+                        </button>
+                        <button 
+                          onClick={() => {
+                            if (confirm('Apakah Anda yakin ingin menghapus semua riwayat scan pada sesi ini?')) {
+                              setHistory([]);
+                              localStorage.removeItem('mitraaja_scan_history');
+                            }
+                          }}
+                          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                          title="Hapus semua riwayat"
+                        >
+                          <span className="material-symbols-outlined">delete</span>
+                        </button>
                       </div>
                     </div>
                     <div className="overflow-x-auto p-4">
@@ -774,7 +851,7 @@ export default function ScannerPage() {
                       </button>
                       
                       <button
-                        onClick={() => alert('Fitur lapor diskrepansi dinonaktifkan sementara.')}
+                        onClick={() => window.open('https://wa.me/6281234567890?text=Halo%20Admin%20Anteraja,%20saya%20menghadapi%20kendala%20pada%20portal%20Mitraaja%20Gateway.', '_blank')}
                         className="p-4 bg-white border-2 border-slate-100 hover:border-rose-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
                       >
                         <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
@@ -784,7 +861,7 @@ export default function ScannerPage() {
                       </button>
 
                       <button
-                        onClick={() => alert('Hubungi operasional Anteraja pusat untuk dukungan sistem.')}
+                        onClick={() => window.open('https://anteraja.id/contact-us', '_blank')}
                         className="p-4 bg-white border-2 border-slate-100 hover:border-blue-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
                       >
                         <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
