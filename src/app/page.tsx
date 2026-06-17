@@ -156,37 +156,44 @@ export default function ScannerPage() {
   // Initials for avatar fallback
   const userInitials = user.name
     ? user.name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
     : 'AG';
 
+  const isMockMode = user.storeName === 'Toko Mock Sejahtera';
+
   return (
-    <div className="bg-surface font-body-md text-on-surface min-h-screen flex overflow-hidden">
+    <div className="bg-[#f4f6f8] font-body-md text-on-surface min-h-screen flex overflow-hidden">
       {/* Side Navigation */}
-      <aside className="w-20 lg:w-64 bg-white border-r border-outline flex flex-col items-center lg:items-stretch py-md shrink-0">
+      <aside className="w-20 lg:w-64 bg-white border-r border-outline/50 flex flex-col items-center lg:items-stretch py-md shrink-0 transition-all duration-300">
         <div className="px-md mb-xl flex items-center gap-base">
           <div className="w-10 h-10 gradient-accent-1 rounded-xl flex items-center justify-center shrink-0 shadow-md">
             <span className="material-symbols-outlined text-white">delivery_dining</span>
           </div>
-          <span className="hidden lg:block font-extrabold text-sm tracking-tight gradient-text leading-none">
-            ANTERAJA<br />AGENT GATEWAY
-          </span>
+          <div className="hidden lg:block leading-none">
+            <span className="font-extrabold text-sm tracking-tight gradient-text block">
+              MITRAAJA GATEWAY
+            </span>
+            <span className="text-[10px] text-secondary font-semibold uppercase tracking-wider block mt-0.5">
+              Anteraja Agent
+            </span>
+          </div>
         </div>
 
         <nav className="flex-grow space-y-xs px-base">
           <a
-            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container transition-all group"
+            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container hover:text-primary transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary">dashboard</span>
+            <span className="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
             <span className="hidden lg:block font-medium">Dashboard</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl bg-surface-container text-primary font-semibold shadow-sm"
+            className="flex items-center gap-md p-md rounded-xl bg-primary/5 text-primary font-bold border border-primary/10 shadow-sm"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
@@ -194,103 +201,118 @@ export default function ScannerPage() {
             <span className="hidden lg:block">Scan Operations</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container transition-all group"
+            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container hover:text-primary transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary">history</span>
+            <span className="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
             <span className="hidden lg:block font-medium">Claims History</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container transition-all group"
+            className="flex items-center gap-md p-md rounded-xl text-secondary hover:bg-surface-container hover:text-primary transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary">analytics</span>
+            <span className="material-symbols-outlined group-hover:text-primary transition-colors">analytics</span>
             <span className="hidden lg:block font-medium">Reports</span>
           </a>
         </nav>
 
-        <div className="mt-auto px-base">
-          <div className="p-md rounded-xl bg-surface-container/50 border border-outline flex items-center gap-md">
-            <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary shrink-0 shadow-inner">
+        <div className="mt-auto px-base space-y-sm">
+          <div className="p-md rounded-xl bg-[#f8f9fa] border border-outline/40 flex items-center gap-md">
+            <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary shrink-0 shadow-sm">
               {userInitials}
             </div>
             <div className="hidden lg:block overflow-hidden">
-              <p className="font-bold text-xs truncate">{user.name}</p>
-              <p className="text-[10px] text-secondary truncate">{user.storeName}</p>
+              <p className="font-bold text-xs text-on-surface truncate">{user.name}</p>
+              <p className="text-[10px] text-secondary font-medium truncate">{user.storeName}</p>
             </div>
           </div>
           <button
             onClick={logout}
-            className="w-full mt-sm flex items-center justify-center gap-xs p-sm rounded-xl text-xs font-bold text-error hover:bg-error/5 transition-all border border-transparent hover:border-error/10"
+            className="w-full flex items-center justify-center gap-xs p-md rounded-xl text-xs font-bold text-error bg-error/5 hover:bg-error/10 transition-all border border-error/10 active:scale-[0.98]"
           >
-            <span className="material-symbols-outlined text-sm">logout</span>
-            <span className="hidden lg:block">Keluar</span>
+            <span className="material-symbols-outlined text-sm font-bold">logout</span>
+            <span className="hidden lg:block">Keluar Sesi</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-grow flex flex-col min-w-0 bg-[#fbfbfc]">
+      <div className="flex-grow flex flex-col min-w-0 bg-[#f4f6f8] relative">
         {/* Top Header */}
-        <header className="h-16 flex items-center justify-between px-lg shrink-0 border-b border-outline/50 bg-white/50 backdrop-blur-sm z-10">
+        <header className="h-16 flex items-center justify-between px-lg shrink-0 border-b border-outline/40 bg-white/80 backdrop-blur-md z-20">
           <div className="flex items-center gap-md">
-            <h1 className="text-xl font-bold text-on-surface">Scan &amp; Claim Operations</h1>
-            <div className="h-6 w-px bg-outline mx-base"></div>
-            <span className="text-sm text-secondary font-label-md">
-              Staff ID: <span className="font-bold">#{user.agentStaffId.slice(0, 8)}...</span>
+            <h1 className="text-lg font-extrabold text-on-surface">Scan &amp; Claim AWB</h1>
+            <div className="h-6 w-px bg-outline/60 mx-xs hidden sm:block"></div>
+            <span className="text-xs text-secondary font-label-md hidden sm:inline-block">
+              Staff ID: <span className="font-bold text-primary">#{user.agentStaffId.slice(0, 8)}...</span>
             </span>
           </div>
+
           <div className="flex items-center gap-md">
-            <div className="relative flex items-center bg-white border border-outline rounded-full px-md py-xs shadow-sm focus-within:border-primary/50 transition-all">
-              <span className="material-symbols-outlined text-secondary mr-xs text-xl">search</span>
+            {/* Search History bar */}
+            <div className="relative flex items-center bg-[#f1f3f5] border border-transparent focus-within:border-primary/20 focus-within:bg-white rounded-full px-md py-1.5 shadow-inner transition-all duration-300">
+              <span className="material-symbols-outlined text-secondary/60 mr-xs text-lg">search</span>
               <input
-                className="bg-transparent border-none focus:ring-0 text-sm w-48 outline-none"
-                placeholder="Search history..."
+                className="bg-transparent border-none text-xs w-40 sm:w-52 outline-none font-medium text-on-surface placeholder:text-secondary/40"
+                placeholder="Cari resi, pengirim, status..."
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <button className="p-xs hover:bg-surface-container rounded-full relative">
-              <span className="material-symbols-outlined text-secondary">notifications</span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border-2 border-white"></span>
-            </button>
-            <button className="p-xs hover:bg-surface-container rounded-full">
-              <span className="material-symbols-outlined text-secondary">settings</span>
+
+            {/* Notification & settings */}
+            <button className="p-sm hover:bg-[#f1f3f5] rounded-full relative transition-colors duration-200">
+              <span className="material-symbols-outlined text-secondary text-lg">notifications</span>
+              <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border border-white"></span>
             </button>
           </div>
         </header>
 
         {/* Scrollable Body */}
-        <main className="flex-grow p-lg overflow-y-auto">
-          <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-lg">
+        <main className="flex-grow p-md lg:p-lg overflow-y-auto z-10">
+          <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-md lg:gap-lg">
+            
             {/* Left Side: Operations */}
-            <div className="col-span-12 lg:col-span-8 space-y-lg">
+            <div className="col-span-12 lg:col-span-8 space-y-md lg:space-y-lg">
+              
               {/* Scan Input Area */}
-              <div className="glass-card rounded-xl p-md relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full gradient-accent-1"></div>
-                <form onSubmit={handleScanSubmit} className="flex flex-col gap-sm">
-                  <label htmlFor="awb_input" className="text-xs font-bold text-primary uppercase tracking-wider block">
-                    Arahkan scanner ke barcode Resi (AWB)
-                  </label>
+              <div className="bg-white border border-outline/40 rounded-2xl p-md shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1.5 h-full gradient-accent-1"></div>
+                <form onSubmit={handleScanSubmit} className="flex flex-col gap-xs">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="awb_input" className="text-[10px] font-bold text-primary uppercase tracking-wider block">
+                      Arahkan barcode scanner gun di sini
+                    </label>
+                    <span className="text-[10px] text-secondary font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
+                      Scanner Siap
+                    </span>
+                  </div>
                   <div className="relative group">
                     <input
                       ref={inputRef}
                       id="awb_input"
                       type="text"
-                      className="w-full h-20 pl-md pr-xl bg-surface-container/30 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-xl text-2xl font-label-md transition-all shadow-inner uppercase outline-none"
-                      placeholder="Masukkan atau Scan Nomor Resi"
+                      className="w-full h-16 pl-md pr-16 bg-[#f8f9fa] border border-outline/50 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/5 rounded-xl text-xl font-label-md transition-all shadow-inner uppercase outline-none placeholder:text-secondary/30"
+                      placeholder="SCAN ATAU MASUKKAN NOMOR RESI AWB"
                       value={awbValue}
                       onChange={(e) => setAwbValue(e.target.value)}
                       disabled={isScanning}
                       autoComplete="off"
                     />
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-md">
-                      <span className={`material-symbols-outlined text-primary text-4xl ${isScanning ? 'animate-spin' : 'animate-pulse'}`}>
-                        {isScanning ? 'sync' : 'barcode_scanner'}
-                      </span>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-md">
+                      {isScanning ? (
+                        <span className="material-symbols-outlined text-primary text-3xl animate-spin">
+                          sync
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-primary text-3xl opacity-70 group-hover:scale-105 transition-transform duration-200">
+                          barcode_scanner
+                        </span>
+                      )}
                     </div>
                   </div>
                 </form>
@@ -299,90 +321,104 @@ export default function ScannerPage() {
               {/* Dynamic Feedback Panel */}
               {scanResult === null ? (
                 // IDLE STATE
-                <div className="glass-card rounded-xl p-xl flex flex-col items-center justify-center text-center transition-all duration-500 min-h-[300px] border-dashed border-2 border-outline relative">
-                  <div className="mb-md p-lg rounded-full bg-surface-container shadow-sm">
-                    <span className="material-symbols-outlined text-6xl text-secondary">qr_code_scanner</span>
+                <div className="bg-white border border-outline/40 border-dashed rounded-2xl p-xl flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[300px] shadow-sm relative group hover:bg-white/50">
+                  <div className="mb-md p-lg rounded-full bg-surface-container border border-outline/20 shadow-sm text-secondary/70 group-hover:scale-105 transition-transform duration-300">
+                    <span className="material-symbols-outlined text-5xl">qr_code_scanner</span>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-secondary mb-xs">MENUNGGU SCAN...</h2>
-                    <p className="text-secondary opacity-60">Silakan scan barcode pada paket untuk memproses claim otomatis.</p>
+                    <h2 className="text-md font-extrabold text-on-surface mb-xs uppercase tracking-wider">MENUNGGU PEMINDAIAN...</h2>
+                    <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed">
+                      Silakan pindai barcode resi AWB pada paket. Sistem akan otomatis melacak status dan mengajukan klaim.
+                    </p>
                   </div>
                 </div>
               ) : scanResult.status === 'searching' ? (
                 // SEARCHING & CLAIMING STATE
-                <div className="glass-card rounded-xl p-xl flex flex-col items-center justify-center text-center transition-all duration-500 min-h-[300px] border-2 border-primary/20 relative overflow-hidden">
-                  <div className="scan-animation absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                  <div className="mb-md p-lg rounded-full bg-primary/5 shadow-sm scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-6xl text-primary animate-spin">sync</span>
+                <div className="bg-white border border-primary/20 rounded-2xl p-xl flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[300px] shadow-sm relative overflow-hidden">
+                  <div className="scan-animation absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]"></div>
+                  <div className="mb-md p-lg rounded-full bg-primary/5 shadow-sm scale-110">
+                    <span className="material-symbols-outlined text-5xl text-primary animate-spin">sync</span>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-primary mb-xs uppercase">SEARCHING &amp; CLAIMING...</h2>
-                    <p className="text-primary font-medium">{scanResult.message}</p>
+                    <h2 className="text-md font-extrabold text-primary mb-xs uppercase tracking-wider">SEDANG BERPROSES...</h2>
+                    <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed font-semibold">
+                      {scanResult.message}
+                    </p>
                   </div>
                 </div>
               ) : scanResult.status === 'success' ? (
                 // SUCCESS STATE
-                <div className="glass-card rounded-xl p-xl flex flex-col items-center justify-center text-center transition-all duration-500 min-h-[300px] border-2 border-success/30 bg-success/5 relative">
-                  <div className="mb-md p-lg rounded-full bg-success/10 shadow-sm">
-                    <span className="material-symbols-outlined text-6xl text-success">verified</span>
+                <div className="bg-green-50/40 border border-success/30 rounded-2xl p-xl flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[300px] shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-success/30"></div>
+                  <div className="mb-md p-lg rounded-full bg-success/10 border border-success/10 shadow-sm">
+                    <span className="material-symbols-outlined text-5xl text-success">verified</span>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-success mb-xs">BERHASIL!</h2>
-                    <p className="text-success font-semibold text-lg">{scanResult.awb}</p>
-                    <p className="text-secondary mt-xs">
-                      Resi dari <span className="font-bold">{scanResult.shipperName || '-'}</span> telah berhasil di-claim.
+                    <span className="px-base py-xs bg-success/15 border border-success/20 text-success text-[10px] font-bold rounded-full uppercase tracking-wider mb-sm inline-block">
+                      Klaim Berhasil
+                    </span>
+                    <h2 className="text-xl font-black text-on-surface font-label-md mb-xs">{scanResult.awb}</h2>
+                    <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed mt-sm">
+                      Paket dari pengirim <span className="font-bold text-on-surface">{scanResult.shipperName || '-'}</span> telah sukses terverifikasi &amp; di-claim oleh sistem.
                     </p>
-                    <p className="text-xs text-secondary/70 mt-sm italic">{scanResult.message}</p>
+                    <p className="text-[10px] text-success font-bold mt-md bg-white border border-success/10 px-md py-xs rounded-full shadow-inner inline-block">
+                      {scanResult.message}
+                    </p>
                   </div>
                 </div>
               ) : (
                 // ERROR STATE
-                <div className="glass-card rounded-xl p-xl flex flex-col items-center justify-center text-center transition-all duration-500 min-h-[300px] border-2 border-error/30 bg-error/5 relative">
-                  <div className="mb-md p-lg rounded-full bg-error/10 shadow-sm">
-                    <span className="material-symbols-outlined text-6xl text-error">gpp_bad</span>
+                <div className="bg-red-50/40 border border-error/30 rounded-2xl p-xl flex flex-col items-center justify-center text-center transition-all duration-300 min-h-[300px] shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-error/30"></div>
+                  <div className="mb-md p-lg rounded-full bg-error/10 border border-error/10 shadow-sm animate-pulse">
+                    <span className="material-symbols-outlined text-5xl text-error">gpp_bad</span>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-error mb-xs">GAGAL</h2>
-                    <p className="text-error font-semibold text-lg">{scanResult.awb}</p>
-                    <p className="text-secondary mt-xs font-medium">{scanResult.message}</p>
+                    <span className="px-base py-xs bg-error/15 border border-error/20 text-error text-[10px] font-bold rounded-full uppercase tracking-wider mb-sm inline-block">
+                      Klaim Gagal
+                    </span>
+                    <h2 className="text-xl font-black text-on-surface font-label-md mb-xs">{scanResult.awb}</h2>
+                    <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed mt-sm font-semibold">
+                      {scanResult.message}
+                    </p>
                     <button
                       onClick={handleNewSession}
-                      className="mt-md px-md py-sm bg-white border border-outline hover:border-primary/50 text-xs font-bold text-secondary uppercase tracking-wider rounded-xl shadow-sm hover:text-primary transition-all"
+                      className="mt-lg px-md py-sm bg-white border border-outline hover:border-primary hover:text-primary text-[10px] font-bold text-secondary uppercase tracking-widest rounded-xl shadow-sm transition-all duration-200 active:scale-[0.98]"
                     >
-                      Coba Lagi
+                      Mulai Pindaian Baru
                     </button>
                   </div>
                 </div>
               )}
 
               {/* History Table */}
-              <div className="glass-card rounded-xl overflow-hidden shadow-glass bg-white/80">
-                <div className="px-md py-md flex justify-between items-center bg-white/50 border-b border-outline">
-                  <div className="flex items-center gap-base">
-                    <span className="material-symbols-outlined text-primary">history_edu</span>
-                    <h3 className="font-bold text-sm uppercase tracking-wider">Riwayat Scan Terakhir</h3>
+              <div className="bg-white border border-outline/40 rounded-2xl overflow-hidden shadow-sm">
+                <div className="px-md py-md flex justify-between items-center bg-[#f8f9fa] border-b border-outline/30">
+                  <div className="flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-primary text-lg">history_edu</span>
+                    <h3 className="font-bold text-xs uppercase tracking-wider">Riwayat Pemindaian Terakhir</h3>
                   </div>
-                  <span className="text-xs font-bold text-secondary font-label-md">
-                    Showing {filteredHistory.length} of {history.length} items
+                  <span className="text-[10px] font-bold text-secondary/60 font-label-md">
+                    Menampilkan {filteredHistory.length} dari {history.length} resi
                   </span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-surface-container/50 border-b border-outline/50">
-                      <tr className="text-[10px] uppercase font-bold text-secondary tracking-widest">
-                        <th className="px-md py-md">No. Resi (AWB)</th>
-                        <th className="px-md py-md">Shipper</th>
-                        <th className="px-md py-md">Status</th>
-                        <th className="px-md py-md">Waktu Scan</th>
-                        <th className="px-md py-md">Pesan</th>
+                    <thead className="bg-[#fcfdfe] border-b border-outline/30">
+                      <tr className="text-[10px] uppercase font-bold text-secondary/60 tracking-wider">
+                        <th className="px-md py-md">Resi AWB</th>
+                        <th className="px-md py-md">Pengirim (Shipper)</th>
+                        <th className="px-md py-md">Hasil</th>
+                        <th className="px-md py-md">Waktu</th>
+                        <th className="px-md py-md">Informasi Gateway</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-outline/50">
+                    <tbody className="divide-y divide-outline/30">
                       {filteredHistory.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="px-md py-xl text-center text-secondary opacity-60">
-                            <span className="material-symbols-outlined text-4xl block mb-xs">receipt_long</span>
-                            Belum ada riwayat scan untuk sesi ini.
+                          <td colSpan={5} className="px-md py-xl text-center text-secondary/60 bg-[#fafafa]">
+                            <span className="material-symbols-outlined text-4xl block mb-xs text-secondary/40">receipt_long</span>
+                            <span className="text-xs font-semibold">Belum ada riwayat scan pada sesi ini.</span>
                           </td>
                         </tr>
                       ) : (
@@ -393,26 +429,26 @@ export default function ScannerPage() {
                             second: '2-digit',
                           });
                           return (
-                            <tr key={item.id} className="hover:bg-white/40 transition-colors">
-                              <td className="px-md py-md font-label-md text-sm font-bold text-primary">
+                            <tr key={item.id} className="hover:bg-[#fcfdfe] transition-colors duration-150">
+                              <td className="px-md py-md font-label-md text-sm font-extrabold text-primary">
                                 {item.awb}
                               </td>
-                              <td className="px-md py-md text-sm">{item.shipperName}</td>
+                              <td className="px-md py-md text-xs font-semibold text-on-surface">{item.shipperName}</td>
                               <td className="px-md py-md">
                                 <span
-                                  className={`px-base py-xs text-[10px] font-bold rounded-full border ${
+                                  className={`px-base py-xs text-[9px] font-extrabold rounded-full border ${
                                     item.status === 'success'
-                                      ? 'bg-success/10 text-success border-success/20'
-                                      : 'bg-error/10 text-error border-error/20'
+                                      ? 'bg-success/8 text-success border-success/15'
+                                      : 'bg-error/8 text-error border-error/15'
                                   }`}
                                 >
                                   {item.status === 'success' ? 'BERHASIL' : 'GAGAL'}
                                 </span>
                               </td>
-                              <td className="px-md py-md text-xs text-secondary">{timeStr}</td>
+                              <td className="px-md py-md text-[11px] font-medium text-secondary">{timeStr}</td>
                               <td
-                                className={`px-md py-md text-sm italic ${
-                                  item.status === 'error' ? 'text-error' : 'text-secondary/80'
+                                className={`px-md py-md text-xs italic font-medium ${
+                                  item.status === 'error' ? 'text-error' : 'text-secondary/70'
                                 }`}
                               >
                                 {item.message}
@@ -428,91 +464,106 @@ export default function ScannerPage() {
             </div>
 
             {/* Right Side: Stats & Info */}
-            <div className="col-span-12 lg:col-span-4 space-y-lg">
+            <div className="col-span-12 lg:col-span-4 space-y-md lg:space-y-lg">
+              
               {/* Metrics Grid */}
               <div className="grid grid-cols-2 gap-md">
-                <div className="glass-card rounded-xl p-md shadow-glass flex flex-col relative overflow-hidden group bg-white">
-                  <div className="absolute -right-4 -bottom-4 w-16 h-16 gradient-accent-1 opacity-10 rounded-full group-hover:scale-150 transition-transform"></div>
-                  <span className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-xs">
-                    Scan Today
+                <div className="bg-white border border-outline/40 rounded-2xl p-md shadow-sm flex flex-col relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                  <div className="absolute -right-4 -bottom-4 w-14 h-14 bg-primary/5 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
+                  <span className="text-[10px] font-bold text-secondary uppercase tracking-wider mb-xs">
+                    Scan Sukses
                   </span>
-                  <span className="text-3xl font-bold text-on-surface">{stats.total}</span>
-                  <div className="mt-xs text-[10px] text-success font-bold flex items-center gap-xs">
-                    <span className="material-symbols-outlined text-xs">trending_up</span> Live Session
+                  <span className="text-3xl font-extrabold text-on-surface leading-tight">{stats.success}</span>
+                  <div className="mt-xs text-[10px] text-success font-bold flex items-center gap-0.5">
+                    <span className="material-symbols-outlined text-xs font-bold">trending_up</span> Live Data
                   </div>
                 </div>
-                <div className="glass-card rounded-xl p-md shadow-glass flex flex-col relative overflow-hidden group bg-white">
-                  <div className="absolute -right-4 -bottom-4 w-16 h-16 gradient-accent-2 opacity-10 rounded-full group-hover:scale-150 transition-transform"></div>
-                  <span className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-xs">
-                    Discrepancy
+                <div className="bg-white border border-outline/40 rounded-2xl p-md shadow-sm flex flex-col relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                  <div className="absolute -right-4 -bottom-4 w-14 h-14 bg-error/5 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
+                  <span className="text-[10px] font-bold text-secondary uppercase tracking-wider mb-xs">
+                    Gagal Klaim
                   </span>
-                  <span className="text-3xl font-bold text-error">{stats.error}</span>
-                  <div className="mt-xs text-[10px] text-error font-bold flex items-center gap-xs">
-                    <span className="material-symbols-outlined text-xs">warning</span> Failures
+                  <span className="text-3xl font-extrabold text-error leading-tight">{stats.error}</span>
+                  <div className="mt-xs text-[10px] text-error font-bold flex items-center gap-0.5">
+                    <span className="material-symbols-outlined text-xs font-bold">warning</span> Diskrepansi
                   </div>
                 </div>
               </div>
 
-              {/* Gradient Card (Action) */}
-              <div className="rounded-xl p-md gradient-accent-1 text-white shadow-xl flex flex-col gap-md relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                <div>
-                  <h4 className="font-bold text-lg">System Health</h4>
-                  <p className="text-xs opacity-90">All services are operating normally with ultra-low latency.</p>
-                </div>
-                <div className="bg-white/20 p-sm rounded-lg flex items-center justify-between">
-                  <div className="flex items-center gap-xs">
-                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                    <span className="text-[10px] font-bold uppercase">Online</span>
+              {/* Gateway Status / Environment health indicator */}
+              <div className="bg-white border border-outline/40 rounded-2xl p-md shadow-sm flex flex-col gap-sm">
+                <h3 className="text-[10px] font-bold text-secondary uppercase tracking-wider">Sistem Konektivitas</h3>
+                
+                <div className="flex items-center justify-between p-sm bg-[#f8f9fa] border border-outline/30 rounded-xl">
+                  <div className="flex items-center gap-sm">
+                    <span className={`w-2.5 h-2.5 rounded-full ${isMockMode ? 'bg-amber-500 animate-pulse' : 'bg-green-500 animate-pulse'}`}></span>
+                    <div>
+                      <span className="text-xs font-bold block uppercase tracking-wide">
+                        {isMockMode ? 'Mock Server Active' : 'Live Gateway Online'}
+                      </span>
+                      <span className="text-[10px] text-secondary font-medium block">
+                        {isMockMode ? 'Mode pengembang tanpa backend API real' : 'Sistem terhubung ke CAS & API Anteraja'}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-bold">Connected Gateway</span>
+                </div>
+
+                <div className="flex justify-between items-center text-[10px] text-secondary/70 font-semibold px-xs">
+                  <span>Network Latency:</span>
+                  <span className="font-label-md text-success">~14ms</span>
+                </div>
+                <div className="flex justify-between items-center text-[10px] text-secondary/70 font-semibold px-xs">
+                  <span>SSL Security:</span>
+                  <span className="text-success uppercase">Active (TLS 1.3)</span>
                 </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="glass-card rounded-xl p-md shadow-glass bg-white">
-                <h3 className="text-xs font-bold text-secondary uppercase tracking-widest mb-md">Quick Actions</h3>
+              <div className="bg-white border border-outline/40 rounded-2xl p-md shadow-sm">
+                <h3 className="text-[10px] font-bold text-secondary uppercase tracking-wider mb-md">Menu Navigasi</h3>
                 <div className="space-y-sm">
                   <button
                     onClick={handleNewSession}
-                    className="w-full p-md bg-white border border-outline hover:border-primary/50 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none"
+                    className="w-full p-sm bg-white border border-outline hover:border-primary/40 hover:bg-primary/5 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-primary text-sm">add</span>
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
+                      <span className="material-symbols-outlined text-primary text-sm font-bold group-hover:text-white transition-colors">add</span>
                     </div>
-                    <span className="text-xs font-bold text-secondary uppercase">New Scan Session</span>
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-wider">Mulai Sesi Baru</span>
                   </button>
+                  
                   <button
                     onClick={() => alert('Fitur lapor diskrepansi dinonaktifkan sementara.')}
-                    className="w-full p-md bg-white border border-outline hover:border-error/50 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none"
+                    className="w-full p-sm bg-white border border-outline hover:border-error/40 hover:bg-error/5 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-error/10 flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-error text-sm">report_problem</span>
+                    <div className="w-8 h-8 rounded-lg bg-error/10 flex items-center justify-center shrink-0 group-hover:bg-error transition-colors duration-200">
+                      <span className="material-symbols-outlined text-error text-sm font-bold group-hover:text-white transition-colors">report_problem</span>
                     </div>
-                    <span className="text-xs font-bold text-secondary uppercase">Report Discrepancy</span>
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-wider">Laporkan Masalah</span>
                   </button>
+
                   <button
                     onClick={() => alert('Hubungi operasional Anteraja pusat untuk dukungan sistem.')}
-                    className="w-full p-md bg-white border border-outline hover:border-secondary rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none"
+                    className="w-full p-sm bg-white border border-outline hover:border-secondary hover:bg-surface-container rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-secondary text-sm">support_agent</span>
+                    <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center shrink-0 group-hover:bg-secondary transition-colors duration-200">
+                      <span className="material-symbols-outlined text-secondary text-sm font-bold group-hover:text-white transition-colors">support_agent</span>
                     </div>
-                    <span className="text-xs font-bold text-secondary uppercase">System Support</span>
+                    <span className="text-[10px] font-bold text-secondary uppercase tracking-wider">Layanan Bantuan</span>
                   </button>
                 </div>
               </div>
+
             </div>
           </div>
         </main>
 
         {/* Footer */}
-        <footer className="h-12 border-t border-outline flex items-center justify-between px-lg shrink-0 bg-white/50 text-[10px] text-secondary font-medium">
+        <footer className="h-12 border-t border-outline/40 flex items-center justify-between px-lg shrink-0 bg-white/60 text-[9px] text-secondary/70 font-semibold z-10">
           <div>© 2026 ANTERAJA LOGISTICS. OPERATIONAL EFFICIENCY UNIT.</div>
-          <div className="flex gap-md uppercase font-bold tracking-widest">
-            <a className="hover:text-primary" href="#" onClick={(e) => e.preventDefault()}>Privacy</a>
-            <a className="hover:text-primary" href="#" onClick={(e) => e.preventDefault()}>Health</a>
-            <a className="hover:text-primary" href="#" onClick={(e) => e.preventDefault()}>Wiki</a>
+          <div className="flex gap-md uppercase font-bold tracking-wider">
+            <a className="hover:text-primary transition-colors" href="#" onClick={(e) => e.preventDefault()}>Kebijakan Privasi</a>
+            <a className="hover:text-primary transition-colors" href="#" onClick={(e) => e.preventDefault()}>Dukungan</a>
           </div>
         </footer>
       </div>
