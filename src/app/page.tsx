@@ -177,276 +177,296 @@ export default function ScannerPage() {
   const isMockMode = user.storeName === 'Toko Mock Sejahtera';
 
   return (
-    <div className="bg-[#f8fafc] font-body-md text-on-surface min-h-screen flex overflow-hidden">
+    <div className="bg-slate-50 font-body-md text-slate-800 min-h-screen flex overflow-hidden selection:bg-primary/20">
       
-      {/* Side Navigation (Fixed desktop drawer) */}
-      <aside className="w-20 lg:w-64 bg-white border-r border-outline flex flex-col items-center lg:items-stretch py-md shrink-0 transition-all duration-300 z-30">
-        <div className="px-md mb-xl flex items-center gap-base">
-          <div className="w-10 h-10 gradient-accent-1 rounded-xl flex items-center justify-center shrink-0 shadow-md">
-            <span className="material-symbols-outlined text-white">delivery_dining</span>
+      {/* Side Navigation (Sleek Dark Mode Sidebar) */}
+      <aside className="w-20 lg:w-72 bg-slate-900 flex flex-col items-center lg:items-stretch py-8 shrink-0 transition-all duration-300 z-30 shadow-2xl relative overflow-hidden">
+        {/* Decorative Background Glows */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+        
+        <div className="px-6 mb-12 flex items-center gap-4 relative z-10">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-rose-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+            <span className="material-symbols-outlined text-white text-2xl font-bold">delivery_dining</span>
           </div>
           <div className="hidden lg:block leading-none">
-            <span className="font-extrabold text-sm tracking-tight gradient-text block">
-              MITRAAJA GATEWAY
+            <span className="font-extrabold text-lg tracking-tight text-white block">
+              MITRAAJA
             </span>
-            <span className="text-[10px] text-[#64748b] font-bold uppercase tracking-wider block mt-0.5">
-              Anteraja Agent
+            <span className="text-xs text-primary font-bold uppercase tracking-widest block mt-1">
+              Agent Portal
             </span>
           </div>
         </div>
 
-        <nav className="flex-grow space-y-xs px-base">
-          <div className="hidden lg:block px-md text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">Menu Utama</div>
+        <nav className="flex-grow space-y-2 px-4 relative z-10">
+          <div className="hidden lg:block px-4 text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-3">Operasional Utama</div>
           <a
-            className="flex items-center gap-md p-md rounded-xl text-slate-500 hover:bg-slate-50 hover:text-primary transition-all group"
+            className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
-            <span className="hidden lg:block font-medium">Dashboard</span>
+            <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">dashboard</span>
+            <span className="hidden lg:block font-semibold">Beranda</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl bg-primary/5 text-primary font-bold border border-primary/10 shadow-sm"
+            className="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gradient-to-r from-primary/20 to-transparent text-white font-bold border-l-4 border-primary shadow-sm"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined">barcode_scanner</span>
-            <span className="hidden lg:block">Scan Operations</span>
+            <span className="material-symbols-outlined text-xl text-primary">barcode_scanner</span>
+            <span className="hidden lg:block">Scan &amp; Claim</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl text-slate-500 hover:bg-slate-50 hover:text-primary transition-all group"
+            className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
-            <span className="hidden lg:block font-medium">Claims History</span>
+            <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">history</span>
+            <span className="hidden lg:block font-semibold">Riwayat Klaim</span>
           </a>
           <a
-            className="flex items-center gap-md p-md rounded-xl text-slate-500 hover:bg-slate-50 hover:text-primary transition-all group"
+            className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all group"
             href="#"
             onClick={(e) => e.preventDefault()}
           >
-            <span className="material-symbols-outlined group-hover:text-primary transition-colors">analytics</span>
-            <span className="hidden lg:block font-medium">Reports</span>
+            <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">analytics</span>
+            <span className="hidden lg:block font-semibold">Laporan Performa</span>
           </a>
         </nav>
 
-        <div className="mt-auto px-base space-y-sm">
-          <div className="p-md rounded-xl bg-slate-50 border border-outline flex items-center gap-md">
-            <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary shrink-0 shadow-sm">
+        <div className="mt-auto px-4 space-y-4 relative z-10">
+          <div className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 flex items-center gap-4 backdrop-blur-md">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white shrink-0 shadow-sm">
               {userInitials}
             </div>
             <div className="hidden lg:block overflow-hidden">
-              <p className="font-bold text-xs text-slate-800 truncate">{user.name}</p>
-              <p className="text-[10px] text-slate-400 font-semibold truncate">{user.storeName}</p>
+              <p className="font-bold text-sm text-white truncate">{user.name}</p>
+              <p className="text-[11px] text-slate-400 font-semibold truncate mt-0.5">{user.storeName}</p>
             </div>
           </div>
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-xs p-md rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all border border-rose-100 active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-3 p-3.5 rounded-xl text-sm font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 hover:text-rose-300 transition-all border border-rose-500/20 active:scale-[0.98]"
           >
-            <span className="material-symbols-outlined text-sm font-bold">logout</span>
-            <span className="hidden lg:block">Keluar Sesi</span>
+            <span className="material-symbols-outlined text-[18px]">logout</span>
+            <span className="hidden lg:block">Akhiri Sesi</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content Pane */}
-      <div className="flex-grow flex flex-col min-w-0 bg-[#f8fafc] relative">
+      <div className="flex-grow flex flex-col min-w-0 bg-[#f8fafc] relative h-screen overflow-hidden">
         
         {/* Top Header Bar */}
-        <header className="h-16 flex items-center justify-between px-lg shrink-0 border-b border-outline bg-white/80 backdrop-blur-md z-20 shadow-sm">
-          <div className="flex items-center gap-md">
-            <h1 className="text-md font-extrabold text-slate-900 tracking-tight">Scan &amp; Claim Operations</h1>
-            <div className="h-6 w-px bg-outline mx-xs hidden sm:block"></div>
-            <span className="text-xs text-slate-500 font-label-md hidden sm:inline-block">
-              Staff ID: <span className="font-bold text-primary">#{user.agentStaffId.slice(0, 8)}...</span>
+        <header className="h-20 flex items-center justify-between px-8 lg:px-12 shrink-0 border-b border-slate-200 bg-white/70 backdrop-blur-xl z-20 sticky top-0">
+          <div className="flex flex-col justify-center">
+            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Console Operations</h1>
+            <span className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Staff ID: <span className="font-bold text-slate-700 font-label-md">#{user.agentStaffId.slice(0, 8).toUpperCase()}</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-md">
-            {/* Search History bar */}
-            <div className="relative flex items-center bg-slate-100 border border-transparent focus-within:border-primary/20 focus-within:bg-white rounded-full px-md py-1.5 shadow-inner transition-all duration-300">
-              <span className="material-symbols-outlined text-slate-400 mr-xs text-lg">search</span>
+          <div className="flex items-center gap-6">
+            {/* Search Bar */}
+            <div className="relative flex items-center bg-slate-100/80 border border-slate-200 focus-within:border-primary/40 focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/5 rounded-2xl px-4 py-2.5 shadow-sm transition-all duration-300">
+              <span className="material-symbols-outlined text-slate-400 mr-3">search</span>
               <input
-                className="bg-transparent border-none text-xs w-44 sm:w-56 outline-none font-medium text-slate-800 placeholder:text-slate-400"
-                placeholder="Cari resi, pengirim, status..."
+                className="bg-transparent border-none text-sm w-48 lg:w-72 outline-none font-medium text-slate-700 placeholder:text-slate-400"
+                placeholder="Cari AWB, pengirim, atau status..."
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="material-symbols-outlined text-slate-400 hover:text-slate-600 text-[18px]">close</button>
+              )}
             </div>
 
             {/* Notification */}
-            <button className="p-sm hover:bg-slate-100 rounded-full relative transition-colors duration-200">
-              <span className="material-symbols-outlined text-slate-600 text-lg">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border border-white"></span>
+            <button className="w-12 h-12 flex items-center justify-center hover:bg-slate-100 rounded-full relative transition-colors duration-200 text-slate-500 hover:text-slate-700">
+              <span className="material-symbols-outlined text-2xl">notifications</span>
+              <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-primary rounded-full border-2 border-white"></span>
             </button>
           </div>
         </header>
 
-        {/* Dashboard Main Grid Area */}
-        <main className="flex-grow p-md lg:p-lg overflow-y-auto">
-          <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-md lg:gap-lg">
+        {/* Dashboard Main Scrollable Area */}
+        <main className="flex-grow p-6 lg:p-10 overflow-y-auto custom-scrollbar">
+          <div className="max-w-[1600px] mx-auto grid grid-cols-12 gap-8 lg:gap-10">
             
             {/* Left Operational Section (8 columns on Desktop) */}
-            <div className="col-span-12 lg:col-span-8 space-y-md lg:space-y-lg">
+            <div className="col-span-12 xl:col-span-8 flex flex-col gap-8">
               
-              {/* Unified Scanner Console Terminal (Combines Scan Input + Live Output into a single cohesive UI) */}
-              <div className="bg-white border border-outline rounded-2xl shadow-card overflow-hidden">
-                {/* Console Title/Status Bar */}
-                <div className="px-md py-3 bg-slate-900 text-white flex justify-between items-center">
-                  <div className="flex items-center gap-base">
-                    <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse-glow"></span>
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-slate-200 font-label-md">SCANNER CONSOLE TERMINAL v1.0.4</span>
+              {/* The Unified Scanner Terminal */}
+              <div className="bg-white border border-slate-200 rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col relative">
+                {/* Terminal Header */}
+                <div className="px-6 py-4 bg-slate-900 flex justify-between items-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                    </div>
+                    <span className="text-[11px] font-bold tracking-widest uppercase text-slate-300 font-label-md">AWB SCANNER TERMINAL v1.0.4</span>
                   </div>
-                  <div className="flex items-center gap-sm text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    <span>STATUS:</span>
-                    <span className="px-base py-0.5 rounded bg-green-500/20 text-green-400">READY</span>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 relative z-10">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    READY TO SCAN
                   </div>
                 </div>
 
                 {/* Scan Input Area */}
-                <div className="p-md border-b border-outline bg-slate-50/50">
-                  <form onSubmit={handleScanSubmit} className="flex flex-col gap-xs">
-                    <label htmlFor="awb_input" className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
-                      Arahkan barcode scanner gun ke kolom input
+                <div className="p-8 border-b border-slate-100 bg-slate-50/50">
+                  <form onSubmit={handleScanSubmit} className="flex flex-col gap-3">
+                    <label htmlFor="awb_input" className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[18px] text-primary">barcode_reader</span>
+                      Arahkan barcode scanner atau ketik resi
                     </label>
                     <div className="relative group">
                       <input
                         ref={inputRef}
                         id="awb_input"
                         type="text"
-                        className="w-full h-16 pl-md pr-16 bg-white border border-outline focus:border-primary/30 focus:ring-4 focus:ring-primary/5 rounded-xl text-xl font-label-md transition-all shadow-sm uppercase outline-none placeholder:text-slate-300"
-                        placeholder="TEMPELKAN BARCODE ATAU KETIK RESI DI SINI"
+                        className="w-full h-20 pl-8 pr-20 bg-white border-2 border-slate-200 focus:border-primary focus:ring-8 focus:ring-primary/5 rounded-2xl text-2xl font-label-md font-bold transition-all shadow-sm uppercase outline-none placeholder:text-slate-300 text-slate-800"
+                        placeholder="TAP &amp; SCAN BARCODE..."
                         value={awbValue}
                         onChange={(e) => setAwbValue(e.target.value)}
                         disabled={isScanning}
                         autoComplete="off"
                       />
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-md">
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center justify-center">
                         {isScanning ? (
-                          <span className="material-symbols-outlined text-primary text-3xl animate-spin">
-                            sync
-                          </span>
+                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-primary text-2xl animate-spin">sync</span>
+                          </div>
                         ) : (
-                          <span className="material-symbols-outlined text-primary text-3xl opacity-75 group-hover:scale-105 transition-transform duration-200">
-                            barcode_scanner
-                          </span>
+                          <button type="submit" className="w-12 h-12 bg-slate-900 hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md">
+                            <span className="material-symbols-outlined text-2xl">arrow_forward</span>
+                          </button>
                         )}
                       </div>
                     </div>
                   </form>
                 </div>
 
-                {/* Integrated Monitor Output screen */}
-                <div className="min-h-[260px] flex flex-col justify-center items-center p-xl relative bg-slate-50/20">
+                {/* Integrated Monitor Output */}
+                <div className="min-h-[320px] flex flex-col justify-center items-center p-10 relative bg-white">
                   
                   {scanResult === null ? (
-                    // IDLE MONITOR STATE
-                    <div className="text-center space-y-md flex flex-col items-center">
-                      {/* Barcode graphic simulation */}
-                      <div className="w-56 h-12 flex items-center justify-between opacity-15 mb-xs">
-                        {[...Array(24)].map((_, i) => (
-                          <div 
-                            key={i} 
-                            className="h-full bg-slate-900 rounded-sm" 
-                            style={{ width: `${(i % 3 === 0 ? 8 : i % 2 === 0 ? 3 : 1)}px` }}
-                          />
-                        ))}
+                    // IDLE
+                    <div className="text-center flex flex-col items-center max-w-md animate-fade-in">
+                      <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 border border-slate-100">
+                        <span className="material-symbols-outlined text-5xl text-slate-300">document_scanner</span>
                       </div>
-                      <div>
-                        <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Awaiting Waybill Scan</h3>
-                        <p className="text-[11px] text-slate-400 max-w-sm mx-auto leading-relaxed mt-1">
-                          Arahkan scanner ke barcode AWB resi untuk memulai klaim otomatis. Data akan langsung ditarik dari database pusat Anteraja.
-                        </p>
-                      </div>
+                      <h3 className="text-lg font-bold text-slate-800 mb-2">Sistem Siap Digunakan</h3>
+                      <p className="text-sm text-slate-500 leading-relaxed font-medium">
+                        Arahkan scanner ke barcode resi Anteraja untuk memulai proses klaim otomatis. Data akan diverifikasi secara real-time.
+                      </p>
                     </div>
                   ) : scanResult.status === 'searching' ? (
-                    // SEARCHING MONITOR STATE
-                    <div className="text-center space-y-md relative overflow-hidden w-full flex flex-col items-center py-8">
-                      <div className="scan-animation absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_12px_var(--color-primary)]"></div>
-                      <div className="p-lg rounded-full bg-primary/5 border border-primary/10 shadow-sm animate-pulse">
-                        <span className="material-symbols-outlined text-5xl text-primary animate-spin">sync</span>
+                    // SEARCHING
+                    <div className="text-center w-full flex flex-col items-center py-10 relative">
+                      <div className="scan-animation absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--color-primary)]"></div>
+                      <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center mb-6 animate-pulse">
+                        <span className="material-symbols-outlined text-5xl text-primary animate-spin">autorenew</span>
                       </div>
-                      <div>
-                        <h3 className="text-xs font-extrabold text-primary uppercase tracking-widest">Memproses Gateway</h3>
-                        <p className="text-[11px] text-slate-500 font-semibold mt-1">
-                          {scanResult.message}
-                        </p>
-                      </div>
+                      <h3 className="text-lg font-extrabold text-slate-800 mb-2 uppercase tracking-wide">Menghubungkan ke Gateway</h3>
+                      <p className="text-sm font-label-md text-primary font-semibold tracking-wider">
+                        MEMPROSES AWB: {scanResult.awb}
+                      </p>
                     </div>
                   ) : scanResult.status === 'success' ? (
-                    // SUCCESS RECEIPT STATE (Sleek parcel docket design)
-                    <div className="w-full max-w-lg bg-emerald-50/30 border border-emerald-100 rounded-xl p-md shadow-sm relative overflow-hidden animate-slide-in">
-                      <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
-                      <div className="flex justify-between items-start border-b border-emerald-100 pb-sm mb-sm">
-                        <div className="flex items-center gap-xs">
-                          <span className="material-symbols-outlined text-emerald-600 text-xl font-bold">check_circle</span>
-                          <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">SUCCESS CLAIM TRANSACTION</span>
+                    // SUCCESS
+                    <div className="w-full max-w-2xl bg-white border border-emerald-100 rounded-[2rem] p-8 shadow-2xl shadow-emerald-500/10 relative overflow-hidden animate-slide-in">
+                      {/* Decorative success splash */}
+                      <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                      
+                      <div className="flex justify-between items-start mb-8 relative z-10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 text-white">
+                            <span className="material-symbols-outlined text-3xl font-bold">check</span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-extrabold text-emerald-600 tracking-tight">KLAIM BERHASIL</h3>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Status: Verified in Gateway</p>
+                          </div>
                         </div>
-                        <span className="text-[9px] font-bold font-label-md text-emerald-600 bg-emerald-100/50 px-2 py-0.5 rounded">
+                        <span className="text-xs font-bold font-label-md text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
                           {scanResult.orderSource}
                         </span>
                       </div>
 
-                      {/* Receipt Fields Grid */}
-                      <div className="grid grid-cols-2 gap-y-sm gap-x-md text-xs">
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Waybill (No. Resi)</span>
-                          <span className="font-extrabold text-slate-800 font-label-md">{scanResult.awb}</span>
+                      {/* Receipt Details */}
+                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 grid grid-cols-2 gap-y-6 gap-x-8 relative z-10">
+                        <div className="col-span-2 sm:col-span-1">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Waybill (No. Resi)</span>
+                          <span className="text-xl font-extrabold text-slate-800 font-label-md tracking-wider">{scanResult.awb}</span>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Shipper (Pengirim)</span>
-                          <span className="font-semibold text-slate-800 truncate block">{scanResult.shipperName || '-'}</span>
+                        <div className="col-span-2 sm:col-span-1">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Destination (Kota)</span>
+                          <span className="text-lg font-bold text-slate-700 truncate block">{scanResult.destinationCity}</span>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Receiver (Penerima)</span>
-                          <span className="font-semibold text-slate-800 truncate block">{scanResult.receiverName}</span>
+                        <div className="col-span-2 sm:col-span-1 border-t border-slate-200 pt-5">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Shipper (Pengirim)</span>
+                          <span className="text-base font-semibold text-slate-700 truncate block">{scanResult.shipperName || '-'}</span>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Destination (Kota)</span>
-                          <span className="font-semibold text-slate-800 truncate block">{scanResult.destinationCity}</span>
+                        <div className="col-span-2 sm:col-span-1 border-t border-slate-200 pt-5">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Receiver (Penerima)</span>
+                          <span className="text-base font-semibold text-slate-700 truncate block">{scanResult.receiverName}</span>
                         </div>
                       </div>
 
-                      <div className="mt-md pt-sm border-t border-emerald-100 flex justify-between items-center text-[10px] text-emerald-700/80 font-bold">
-                        <span>{scanResult.message}</span>
-                        <span className="font-label-md">{new Date().toLocaleTimeString('id-ID')}</span>
+                      <div className="mt-6 flex justify-between items-center text-sm font-medium relative z-10">
+                        <span className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl">
+                          <span className="material-symbols-outlined text-[18px]">verified</span>
+                          {scanResult.message}
+                        </span>
+                        <span className="font-label-md text-slate-400 font-bold">{new Date().toLocaleTimeString('id-ID')}</span>
                       </div>
                     </div>
                   ) : (
-                    // ERROR WARNING STATE
-                    <div className="w-full max-w-lg bg-rose-50/30 border border-rose-100 rounded-xl p-md shadow-sm relative overflow-hidden animate-slide-in">
-                      <div className="absolute top-0 left-0 w-1.5 h-full bg-rose-500"></div>
-                      <div className="flex justify-between items-start border-b border-rose-100 pb-sm mb-sm">
-                        <div className="flex items-center gap-xs text-rose-700">
-                          <span className="material-symbols-outlined text-xl font-bold">error_outline</span>
-                          <span className="text-[10px] font-bold uppercase tracking-widest">TRANSACTION DISCREPANCY</span>
+                    // ERROR
+                    <div className="w-full max-w-2xl bg-white border border-rose-100 rounded-[2rem] p-8 shadow-2xl shadow-rose-500/10 relative overflow-hidden animate-slide-in">
+                      {/* Decorative error splash */}
+                      <div className="absolute -top-24 -right-24 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl"></div>
+                      
+                      <div className="flex justify-between items-start mb-8 relative z-10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 bg-rose-500 rounded-full flex items-center justify-center shadow-lg shadow-rose-500/30 text-white">
+                            <span className="material-symbols-outlined text-3xl font-bold">priority_high</span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-extrabold text-rose-600 tracking-tight">KLAIM DITOLAK</h3>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Status: Discrepancy Found</p>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="space-y-xs text-xs">
+                      <div className="bg-rose-50 rounded-2xl p-6 border border-rose-100 relative z-10">
+                        <div className="mb-5 pb-5 border-b border-rose-200/60">
+                          <span className="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest block mb-1.5">Waybill (No. Resi)</span>
+                          <span className="text-xl font-extrabold text-slate-800 font-label-md tracking-wider">{scanResult.awb}</span>
+                        </div>
                         <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Waybill (No. Resi)</span>
-                          <span className="font-extrabold text-slate-800 font-label-md">{scanResult.awb}</span>
-                        </div>
-                        <div className="pt-xs">
-                          <span className="text-[9px] font-bold text-rose-500 uppercase tracking-wider block">Penyebab Gagal</span>
-                          <span className="font-bold text-rose-700 block mt-0.5 leading-relaxed">{scanResult.message}</span>
+                          <span className="text-[10px] font-extrabold text-rose-400 uppercase tracking-widest block mb-2 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[16px]">info</span>
+                            Penyebab Penolakan
+                          </span>
+                          <span className="text-base font-bold text-rose-700 block leading-relaxed">{scanResult.message}</span>
                         </div>
                       </div>
 
-                      <div className="mt-md pt-sm border-t border-rose-100 flex justify-between items-center">
+                      <div className="mt-8 flex justify-between items-center relative z-10">
                         <button
                           onClick={handleNewSession}
-                          className="px-sm py-1 bg-white border border-rose-200 hover:border-rose-400 text-[9px] font-bold text-rose-700 uppercase tracking-widest rounded-lg shadow-sm transition-colors duration-200"
+                          className="px-6 py-3 bg-white border-2 border-rose-200 hover:border-rose-500 text-sm font-bold text-rose-600 hover:text-white hover:bg-rose-500 rounded-xl transition-all shadow-sm flex items-center gap-2 group"
                         >
-                          Pindai Ulang
+                          <span className="material-symbols-outlined text-[18px] group-hover:-rotate-180 transition-transform duration-500">refresh</span>
+                          Pindai Ulang AWB
                         </button>
-                        <span className="text-[10px] text-rose-500 font-bold font-label-md">
-                          {new Date().toLocaleTimeString('id-ID')}
-                        </span>
+                        <span className="font-label-md text-rose-400 font-bold">{new Date().toLocaleTimeString('id-ID')}</span>
                       </div>
                     </div>
                   )}
@@ -455,65 +475,64 @@ export default function ScannerPage() {
               </div>
 
               {/* History Table */}
-              <div className="bg-white border border-outline rounded-2xl overflow-hidden shadow-card">
-                <div className="px-md py-md flex justify-between items-center bg-slate-50 border-b border-outline">
-                  <div className="flex items-center gap-xs">
-                    <span className="material-symbols-outlined text-primary text-lg font-bold">history_edu</span>
-                    <h3 className="font-extrabold text-xs uppercase tracking-wider text-slate-800">Riwayat Pemindaian Terakhir</h3>
+              <div className="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-card">
+                <div className="px-8 py-6 flex justify-between items-center bg-white border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                      <span className="material-symbols-outlined text-slate-500">list_alt</span>
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-sm uppercase tracking-wide text-slate-800">Riwayat Sesi Aktif</h3>
+                      <p className="text-xs text-slate-500 font-medium mt-0.5">Menampilkan {filteredHistory.length} dari {history.length} resi</p>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-bold text-slate-400 font-label-md">
-                    Filter: {filteredHistory.length} / {history.length} AWB
-                  </span>
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"><span className="material-symbols-outlined">filter_list</span></button>
+                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"><span className="material-symbols-outlined">download</span></button>
+                  </div>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto p-4">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[#fcfdfe] border-b border-outline">
-                      <tr className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                        <th className="px-md py-md">Resi AWB</th>
-                        <th className="px-md py-md">Pengirim</th>
-                        <th className="px-md py-md">Hasil</th>
-                        <th className="px-md py-md">Waktu Scan</th>
-                        <th className="px-md py-md">Pesan Informasi</th>
+                    <thead>
+                      <tr className="text-[10px] uppercase font-extrabold text-slate-400 tracking-widest border-b border-slate-100">
+                        <th className="px-4 py-4 pl-6">No. Resi (AWB)</th>
+                        <th className="px-4 py-4">Pengirim</th>
+                        <th className="px-4 py-4">Status Klaim</th>
+                        <th className="px-4 py-4">Waktu</th>
+                        <th className="px-4 py-4 pr-6">Keterangan</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-outline/50">
+                    <tbody className="divide-y divide-slate-50">
                       {filteredHistory.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="px-md py-12 text-center text-slate-400 bg-slate-50/20">
-                            <span className="material-symbols-outlined text-4xl block mb-xs text-slate-300">receipt_long</span>
-                            <span className="text-xs font-semibold block mt-1">Belum ada riwayat scan pada sesi ini.</span>
+                          <td colSpan={5} className="px-6 py-16 text-center text-slate-400 bg-slate-50/50 rounded-xl">
+                            <span className="material-symbols-outlined text-5xl block mb-3 text-slate-300">receipt_long</span>
+                            <span className="text-sm font-semibold block text-slate-500">Belum ada riwayat pada sesi ini. Mulai lakukan scanning.</span>
                           </td>
                         </tr>
                       ) : (
                         filteredHistory.map((item) => {
                           const timeStr = item.timestamp.toLocaleTimeString('id-ID', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
+                            hour: '2-digit', minute: '2-digit', second: '2-digit',
                           });
+                          const isSuccess = item.status === 'success';
                           return (
-                            <tr key={item.id} className="hover:bg-slate-50/50 transition-colors duration-150">
-                              <td className="px-md py-md font-label-md text-sm font-extrabold text-primary">
-                                {item.awb}
+                            <tr key={item.id} className="hover:bg-slate-50 transition-colors group cursor-default">
+                              <td className="px-4 py-4 pl-6">
+                                <span className="font-label-md text-[13px] font-extrabold text-slate-800 group-hover:text-primary transition-colors">{item.awb}</span>
                               </td>
-                              <td className="px-md py-md text-xs font-bold text-slate-700">{item.shipperName}</td>
-                              <td className="px-md py-md">
-                                <span
-                                  className={`px-base py-xs text-[9px] font-extrabold rounded-full border ${
-                                    item.status === 'success'
-                                      ? 'bg-emerald-50 text-emerald-600 border-emerald-150'
-                                      : 'bg-rose-50 text-rose-600 border-rose-150'
-                                  }`}
-                                >
-                                  {item.status === 'success' ? 'BERHASIL' : 'GAGAL'}
+                              <td className="px-4 py-4 text-xs font-bold text-slate-600">{item.shipperName}</td>
+                              <td className="px-4 py-4">
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-extrabold rounded-lg border ${
+                                  isSuccess ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'
+                                }`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${isSuccess ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                                  {isSuccess ? 'BERHASIL' : 'GAGAL'}
                                 </span>
                               </td>
-                              <td className="px-md py-md text-[10px] font-semibold text-slate-400">{timeStr}</td>
-                              <td
-                                className={`px-md py-md text-xs italic font-medium ${
-                                  item.status === 'error' ? 'text-rose-600 font-semibold' : 'text-slate-500'
-                                }`}
-                              >
+                              <td className="px-4 py-4 text-[11px] font-bold text-slate-400 font-label-md">{timeStr}</td>
+                              <td className={`px-4 py-4 pr-6 text-xs font-medium ${isSuccess ? 'text-slate-500' : 'text-rose-600 font-bold'}`}>
                                 {item.message}
                               </td>
                             </tr>
@@ -527,114 +546,121 @@ export default function ScannerPage() {
             </div>
 
             {/* Right Information Panel (4 columns on Desktop) */}
-            <div className="col-span-12 lg:col-span-4 space-y-md lg:space-y-lg">
+            <div className="col-span-12 xl:col-span-4 flex flex-col gap-8">
               
-              {/* Premium Session Counter Card (Highlighted Big Counter) */}
-              <div className="bg-white border border-outline rounded-2xl p-md shadow-card flex flex-col items-center relative overflow-hidden text-center">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-md">Total Scan Sesi Ini</h3>
+              {/* Premium Session Counter Card */}
+              <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 flex flex-col items-center relative overflow-hidden text-center group">
+                {/* Abstract Background */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[100px] -z-0 transition-transform group-hover:scale-110"></div>
+                
+                <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-6 relative z-10">Total Scan Sesi Ini</h3>
                 
                 {/* Big Counter Value */}
-                <div className="w-28 h-28 rounded-full border-4 border-slate-100 flex items-center justify-center shadow-inner relative mb-md bg-slate-50">
-                  <span className="text-4xl font-extrabold text-slate-800 font-label-md">{stats.total}</span>
+                <div className="w-36 h-36 rounded-full bg-white border-[8px] border-slate-50 flex items-center justify-center shadow-[0_0_40px_-10px_rgba(0,0,0,0.05)] relative mb-8 z-10 transition-transform group-hover:scale-105">
+                  <span className="text-6xl font-black text-slate-800 font-label-md tracking-tighter">{stats.total}</span>
                 </div>
 
                 {/* Substats Rate Bars */}
-                <div className="w-full space-y-sm border-t border-outline pt-md">
-                  <div className="space-y-xs">
-                    <div className="flex justify-between text-[10px] font-bold text-emerald-600">
-                      <span className="flex items-center gap-xs">
-                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                        BERHASIL
+                <div className="w-full space-y-5 relative z-10">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-extrabold text-emerald-600">
+                      <span className="flex items-center gap-2 uppercase tracking-wide">
+                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                        Berhasil
                       </span>
-                      <span>{stats.success} ({stats.successRate}%)</span>
+                      <span>{stats.success} <span className="text-slate-400 font-semibold ml-1">({stats.successRate}%)</span></span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${stats.successRate}%` }}></div>
+                    <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${stats.successRate}%` }}></div>
                     </div>
                   </div>
 
-                  <div className="space-y-xs">
-                    <div className="flex justify-between text-[10px] font-bold text-rose-600">
-                      <span className="flex items-center gap-xs">
-                        <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
-                        GAGAL / DISKREPANSI
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-extrabold text-rose-600">
+                      <span className="flex items-center gap-2 uppercase tracking-wide">
+                        <span className="material-symbols-outlined text-[16px]">cancel</span>
+                        Ditolak
                       </span>
-                      <span>{stats.error} ({stats.errorRate}%)</span>
+                      <span>{stats.error} <span className="text-slate-400 font-semibold ml-1">({stats.errorRate}%)</span></span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-rose-500 rounded-full" style={{ width: `${stats.errorRate}%` }}></div>
+                    <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-rose-400 to-rose-500 rounded-full transition-all duration-1000" style={{ width: `${stats.errorRate}%` }}></div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Gateway Connection Details Card */}
-              <div className="bg-white border border-outline rounded-2xl p-md shadow-card flex flex-col gap-sm">
-                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-outline pb-xs">Status Konektivitas</h3>
+              <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card flex flex-col gap-6">
+                <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">dns</span>
+                  Status Gateway
+                </h3>
                 
-                <div className="flex items-center justify-between p-sm bg-slate-50 border border-outline rounded-xl">
-                  <div className="flex items-center gap-sm">
-                    <span className={`w-2.5 h-2.5 rounded-full ${isMockMode ? 'bg-amber-500 animate-pulse' : 'bg-green-500 animate-pulse'}`}></span>
-                    <div>
-                      <span className="text-xs font-bold block uppercase tracking-wide">
-                        {isMockMode ? 'Mock Server Active' : 'Live Gateway Online'}
-                      </span>
-                      <span className="text-[9px] text-slate-400 font-semibold block leading-tight mt-0.5">
-                        {isMockMode ? 'Mode simulasi developer' : 'Terhubung langsung ke API Anteraja'}
-                      </span>
-                    </div>
+                <div className="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-inner ${isMockMode ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                    <span className="material-symbols-outlined text-2xl">{isMockMode ? 'science' : 'wifi'}</span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-extrabold text-slate-800 block">
+                      {isMockMode ? 'Developer Sandbox' : 'Production Active'}
+                    </span>
+                    <span className="text-xs text-slate-500 font-semibold mt-0.5 block">
+                      {isMockMode ? 'Simulated API Responses' : 'Live Connected to API'}
+                    </span>
                   </div>
                 </div>
 
-                <div className="space-y-xs text-[10px] font-bold text-slate-500 px-xs">
-                  <div className="flex justify-between">
-                    <span>Host API:</span>
-                    <span className="font-label-md font-medium text-slate-700">{isMockMode ? 'MOCK_SANDBOX' : 'api.anteraja.id'}</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Latency</span>
+                    <span className="font-label-md text-emerald-600 font-bold text-lg">12<span className="text-xs">ms</span></span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Gateway Ping:</span>
-                    <span className="font-label-md text-emerald-600 font-semibold">12ms</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Active Store:</span>
-                    <span className="text-primary truncate max-w-[150px] font-semibold">{user.storeName}</span>
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1">Uptime</span>
+                    <span className="font-label-md text-slate-700 font-bold text-lg">99.9<span className="text-xs">%</span></span>
                   </div>
                 </div>
               </div>
 
               {/* Quick Navigation Menu Actions */}
-              <div className="bg-white border border-outline rounded-2xl p-md shadow-card">
-                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-md">Layanan Sistem</h3>
-                <div className="space-y-sm">
+              <div className="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-card">
+                <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[18px]">apps</span>
+                  Tindakan Cepat
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handleNewSession}
-                    className="w-full p-sm bg-white border border-outline hover:border-primary/40 hover:bg-primary/5 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
+                    className="col-span-2 p-4 bg-white border-2 border-slate-100 hover:border-primary focus:border-primary rounded-2xl flex items-center gap-4 transition-all shadow-sm group"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                      <span className="material-symbols-outlined text-primary text-sm font-bold group-hover:text-white transition-colors">add</span>
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors">
+                      <span className="material-symbols-outlined text-primary group-hover:text-white transition-colors">add_box</span>
                     </div>
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Mulai Sesi Baru</span>
+                    <div className="text-left">
+                      <span className="text-sm font-bold text-slate-800 block">Sesi Baru</span>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Reset Terminal</span>
+                    </div>
                   </button>
                   
                   <button
                     onClick={() => alert('Fitur lapor diskrepansi dinonaktifkan sementara.')}
-                    className="w-full p-sm bg-white border border-outline hover:border-rose-400 hover:bg-rose-50 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
+                    className="p-4 bg-white border-2 border-slate-100 hover:border-rose-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center shrink-0 group-hover:bg-rose-500 transition-colors duration-200">
-                      <span className="material-symbols-outlined text-rose-600 text-sm font-bold group-hover:text-white transition-colors">report_problem</span>
+                    <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
+                      <span className="material-symbols-outlined text-rose-500">report</span>
                     </div>
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Laporkan Masalah</span>
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Lapor<br/>Masalah</span>
                   </button>
 
                   <button
                     onClick={() => alert('Hubungi operasional Anteraja pusat untuk dukungan sistem.')}
-                    className="w-full p-sm bg-white border border-outline hover:border-slate-400 hover:bg-slate-50 rounded-xl flex items-center gap-md transition-all shadow-sm active:scale-[0.98] outline-none group"
+                    className="p-4 bg-white border-2 border-slate-100 hover:border-blue-400 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-sm group text-center"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-slate-500 transition-colors duration-200">
-                      <span className="material-symbols-outlined text-slate-500 text-sm font-bold group-hover:text-white transition-colors">support_agent</span>
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                      <span className="material-symbols-outlined text-blue-500">support_agent</span>
                     </div>
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Layanan Bantuan</span>
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Pusat<br/>Bantuan</span>
                   </button>
                 </div>
               </div>
@@ -642,15 +668,6 @@ export default function ScannerPage() {
             </div>
           </div>
         </main>
-
-        {/* Footer */}
-        <footer className="h-12 border-t border-outline flex items-center justify-between px-lg shrink-0 bg-white/60 text-[9px] text-slate-400 font-bold z-10">
-          <div>© 2026 ANTERAJA LOGISTICS. OPERATIONAL EFFICIENCY UNIT.</div>
-          <div className="flex gap-md uppercase tracking-wider">
-            <a className="hover:text-primary transition-colors" href="#" onClick={(e) => e.preventDefault()}>Kebijakan Privasi</a>
-            <a className="hover:text-primary transition-colors" href="#" onClick={(e) => e.preventDefault()}>Dukungan Sistem</a>
-          </div>
-        </footer>
       </div>
     </div>
   );
